@@ -1,5 +1,6 @@
-# the binary produced by make
+# binary files produced by make
 colopt
+*.o
 
 # vim state
 *.swp
