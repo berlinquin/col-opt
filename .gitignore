@@ -1,0 +1,5 @@
+# the binary produced by make
+colopt
+
+# vim state
+*.swp
