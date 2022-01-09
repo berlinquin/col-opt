@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
    // If argv has a filename, open that for reading
    // Otherwise, read from stdin
-   Matrix *cell_lengths;
+   array_type *cell_lengths;
    bool success = parse_csv(argv[1], &cell_lengths);
    return 0;
 }

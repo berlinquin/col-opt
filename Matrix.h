@@ -1,20 +1,5 @@
-struct Matrix
-{
-   int rows;
-   int cols;
-   int **matrix;
+#include <boost/multi_array.hpp>
 
-   // Default constructor
-   Matrix();
+typedef boost::multi_array<int, 2> array_type;
+typedef array_type::index index;
 
-   // Destructor
-   ~Matrix();
-
-   // Prevent copying and assignment
-   Matrix(const Matrix &) = delete;
-   Matrix& operator=(const Matrix&) = delete;
-
-   // Allow move constructors and assignment
-   Matrix(Matrix&&);
-   Matrix& operator=(Matrix&&);
-};
