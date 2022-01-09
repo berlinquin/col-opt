@@ -13,10 +13,12 @@ bool parse_csv(const char *filename, array_type **out)
    // Iterate over the csv, for each cell
    for (size_t i = 0; i < ROWS; i++)
    {
-      std::vector<char> row = csv_file.GetRow<char>(i);
+      std::vector<std::string> row = csv_file.GetRow<std::string>(i);
+      printf("%d\n", i);
       for (int j = 0; j < COLS; j++)
       {
-         (**out)[i][j] = j;
+         printf("%d %s\n", j, row[j].c_str());
+         (**out)[i][j] = row[j].size();
       }
    }
    return true;
