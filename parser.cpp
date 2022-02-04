@@ -17,13 +17,15 @@ bool parse_csv(const std::string& filename, table_type **out)
       // Force all rows to have the same number of columns
       if (row.size() != COLS)
       {
-         printf("ERROR: row %d has %d columns, %d columns expected.\n", i, row.size(), COLS);
+         printf("Error: row %d has %d columns, %d columns expected.\n", i, row.size(), COLS);
          return false;
       }
-      printf("%d\n", i);
+      // Print the row number
+      //printf("%d\n", i);
       for (int j = 0; j < COLS; j++)
       {
-         printf("%d %s\n", j, row[j].c_str());
+         // Print the column number and cell contents
+         //printf("%d %s\n", j, row[j].c_str());
          // Write the string's length to output matrix
          (**out)[i][j] = row[j].size();
       }

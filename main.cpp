@@ -53,11 +53,6 @@ int main(int argc, char *argv[])
       printf("Error: could not parse int from string '%s'\n", argv[2]);
       return 1;
    }
-   catch (const fs::filesystem_error& e)
-   {
-      printf("Error: could not evaluate path '%s'\n", argv[3]);
-      return 1;
-   }
    catch (...)
    {
       printf("Error: could not parse arguments\n");
