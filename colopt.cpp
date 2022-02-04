@@ -1,5 +1,6 @@
 #include "colopt.h"
 #include <cmath>
+#include "combination.h"
 
 inline int max(int a, int b)
 {
@@ -33,5 +34,18 @@ int cost(const table_type& table, const std::vector<int>& widths)
 void optimize(const table_type& table, int width)
 {
    printf("optimize()\n");
+   
+   const int ROWS = table.shape()[0];
+   const int COLS = table.shape()[1];
+
+   combination_generator cg(width-1, COLS-1);
+   int i = 0;
+   while (cg.has_next())
+   {
+      std::vector<int> out = cg.next();
+      //printf("[%d, %d, %d]\n", out[0], out[1], out[2]);
+      i++;
+   }
+   printf("There are %d combinations\n", i);
 }
 

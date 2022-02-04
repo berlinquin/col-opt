@@ -10,7 +10,7 @@ main.o: main.cpp table.h combination.h
 parser.o: parser.h parser.cpp table.h
 	g++ $(CPP_FLAGS) -c parser.cpp
 
-colopt.o: colopt.h colopt.cpp
+colopt.o: colopt.h colopt.cpp table.h combination.h
 	g++ $(CPP_FLAGS) -c colopt.cpp
 
 combination.o: combination.h combination.cpp
