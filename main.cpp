@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "table.h"
 #include "colopt.h"
+#include "combination.h"
 
 
 
@@ -78,6 +79,13 @@ int main(int argc, char *argv[])
    // - take an integer (total width) as input from the user
    // - iterate over all possible column splits, run the cost function
    // - print out the optimal column widths
+
+   combination_generator cg(6,7);
+   while (cg.has_next())
+   {
+      std::vector<int> out = cg.next();
+      printf("[%d, %d, %d]\n", out[0], out[1], out[2]);
+   }
 
    // Do a naive optimization of the table
    optimize(*cell_lengths, width);
