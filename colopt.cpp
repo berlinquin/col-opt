@@ -29,3 +29,9 @@ int cost(const table_type& table, const std::vector<int>& widths)
    }
    return table_length;
 }
+
+void optimize(const table_type& table, int width)
+{
+   printf("optimize()\n");
+}
+

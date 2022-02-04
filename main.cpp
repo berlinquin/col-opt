@@ -3,6 +3,7 @@
 
 #include "parser.h"
 #include "table.h"
+#include "colopt.h"
 
 
 
@@ -77,6 +78,9 @@ int main(int argc, char *argv[])
    // - take an integer (total width) as input from the user
    // - iterate over all possible column splits, run the cost function
    // - print out the optimal column widths
+
+   // Do a naive optimization of the table
+   optimize(*cell_lengths, width);
 
    // Print the table of string lengths
    for (table_index i = 0; i < ROWS; i++)
