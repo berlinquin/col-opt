@@ -1,7 +1,10 @@
 #include <iostream>
+#include <filesystem>
 
 #include "parser.h"
 #include "Matrix.h"
+
+
 
 void printUsage()
 {
@@ -11,34 +14,55 @@ void printUsage()
 
 int main(int argc, char *argv[])
 {
+   // Alias the std::filesystem namespace
+   namespace fs = std::filesystem;
+
    // Make sure that three args were passed,
    // and that the first arg is the -w flag
    if (argc != 4)
    {
+      printf("Error: %d arguments passed, 3 expected\n", (argc-1));
       printUsage();
-      printf("\nError: %d arguments passed\n", argc);
       return 1;
    }
    else if (argv[1] != std::string("-w"))
    {
+      printf("Error: flag '%s' not recognized\n", argv[1]);
       printUsage();
-      printf("\nError: flag '%s' not recognized\n", argv[1]);
       return 1;
    }
 
-   // Parse the width argument into width
+   // Parse the width and filename from the given args
    int width;
+   std::string filename = argv[3];
    try
    {
       // can throw std::invalid_argument or std::out_of_range
       width = std::stoi(argv[2]);
+      // can throw implementation defined exceptions
+      fs::path path { filename };
+      // can throw fs::filesystem_error
+      if (!fs::exists(path))
+      {
+         printf("Error: file '%s' does not exist\n", argv[3]);
+         return 1;
+      }
    }
-   catch (...)
+   catch (const std::invalid_argument& e)
    {
       printf("Error: could not parse int from string '%s'\n", argv[2]);
       return 1;
    }
-
+   catch (const fs::filesystem_error& e)
+   {
+      printf("Error: could not evaluate path '%s'\n", argv[3]);
+      return 1;
+   }
+   catch (...)
+   {
+      printf("Error: could not parse arguments\n");
+      return 1;
+   }
 
    array_type *cell_lengths;
    bool success = parse_csv(argv[3], &cell_lengths);
