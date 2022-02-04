@@ -2,7 +2,7 @@
 #include <filesystem>
 
 #include "parser.h"
-#include "Matrix.h"
+#include "table.h"
 
 
 
@@ -64,14 +64,15 @@ int main(int argc, char *argv[])
       return 1;
    }
 
-   array_type *cell_lengths;
+   // Parse the input file into a table of cell lengths
+   table_type *cell_lengths;
    bool success = parse_csv(filename, &cell_lengths);
    if (!success)
    {
       return 1;
    }
 
-   // array_type has two dimensions by definition
+   // table_type has two dimensions by definition
    const int ROWS = cell_lengths->shape()[0];
    const int COLS = cell_lengths->shape()[1];
    printf("cell_lengths has shape %dx%d\n", ROWS, COLS);
@@ -83,9 +84,9 @@ int main(int argc, char *argv[])
    // - print out the optimal column widths
 
    // Print the table of string lengths
-   for (index i = 0; i < ROWS; i++)
+   for (table_index i = 0; i < ROWS; i++)
    {
-      for (index j = 0; j < COLS; j++)
+      for (table_index j = 0; j < COLS; j++)
       {
          printf("%d\t", (*cell_lengths)[i][j]);
       }

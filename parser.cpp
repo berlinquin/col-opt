@@ -3,13 +3,13 @@
 #include "rapidcsv/rapidcsv.h"
 #include "parser.h"
 
-bool parse_csv(const std::string& filename, array_type **out)
+bool parse_csv(const std::string& filename, table_type **out)
 {
    rapidcsv::Document csv_file(filename);
    const int ROWS = csv_file.GetRowCount();
    const int COLS = csv_file.GetColumnCount();
    // Create a 2D array with the same dimensions as the csv file
-   *out = new array_type(boost::extents[ROWS][COLS]);
+   *out = new table_type(boost::extents[ROWS][COLS]);
    // Iterate over the csv, for each cell
    for (int i = 0; i < ROWS; i++)
    {
