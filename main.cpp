@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
    }
 
    array_type *cell_lengths;
-   bool success = parse_csv(argv[3], &cell_lengths);
+   bool success = parse_csv(filename, &cell_lengths);
    if (!success)
    {
       return 1;

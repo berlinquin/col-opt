@@ -3,7 +3,7 @@
 #include "rapidcsv/rapidcsv.h"
 #include "parser.h"
 
-bool parse_csv(const char *filename, array_type **out)
+bool parse_csv(const std::string& filename, array_type **out)
 {
    rapidcsv::Document csv_file(filename);
    const int ROWS = csv_file.GetRowCount();
