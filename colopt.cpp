@@ -64,15 +64,25 @@ void optimize(const table_type& table, int width)
       }
       // Calculate the width of the last column manually
       widths[COLS-1] = usable_width - accumulated_width;
-      //printf("[%d, %d, %d]\n", out[0], out[1], out[2]);
+
+      /*
+      printf("dividers:\n");
+      printf("[");
+      for (int i = 0; i < dividers.size(); i++)
+      {
+         printf("%d ", dividers[i]);
+      }
+      printf("]\n");
 
       // print out widths
+      printf("widths:\n");
       printf("[");
       for (int i = 0; i < widths.size(); i++)
       {
          printf("%d ", widths[i]);
       }
       printf("]\n");
+      */
 
       int c = cost(table, widths);
       if (c < min_cost)
