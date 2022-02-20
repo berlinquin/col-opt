@@ -16,6 +16,21 @@ void printUsage()
 
 int main(int argc, char *argv[])
 {
+   // TEMP test the different combination fns
+   combination_generator2 cg(6, 3);
+   printf("combinations:\n");
+   while (cg.has_next())
+   {
+      std::vector<int> c = cg.next();
+      printf("[");
+      for (int i : c)
+      {
+         printf("%d ", i);
+      }
+      printf("]\n");
+   }
+   return 0;
+
    // Alias the std::filesystem namespace
    namespace fs = std::filesystem;
 
