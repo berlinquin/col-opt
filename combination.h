@@ -21,3 +21,23 @@ private:
    std::vector<int> m_index;
 };
 
+// Run an O(n) instead of O(n2) algorithm in next()
+class combination_generator2
+{
+public:
+   // Construct a generator for all combinations in "n-choose-k"
+   combination_generator2(int n, int k);
+
+   // Return k values in the range [0, n)
+   // to give the indices of the elements in this combination
+   std::vector<int> next();
+
+   // True if there is another combination
+   bool has_next();
+
+private:
+   const int N;
+   const int K;
+   std::vector<int> m_index;
+   std::vector<int> m_max;
+};
