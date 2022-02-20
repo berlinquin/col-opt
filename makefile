@@ -1,6 +1,8 @@
 # Include debug symbols and use c++17
 CPP_FLAGS = -g -std=c++17
 
+.PHONY: clean time
+
 colopt: main.o parser.o colopt.o combination.o
 	g++ $(CPP_FLAGS) -o colopt main.o parser.o colopt.o combination.o
 
@@ -18,3 +20,7 @@ combination.o: combination.h combination.cpp
 
 clean:
 	rm colopt *.o
+
+time: colopt
+	/usr/bin/bash -c 'time ./colopt -w 20 ramen-ratings.csv > /dev/null'
+
