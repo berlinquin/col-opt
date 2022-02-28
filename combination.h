@@ -39,5 +39,10 @@ private:
    const int N;
    const int K;
    std::vector<int> m_index;
+   std::vector<int> m_max_indices;
    std::vector<int> m_max;
+   
+   // Invariant: for i in range [0, K-1),
+   // m_sum[i] = SUM(k=0, k<i, m_index[k])
+   std::vector<int> m_sum;
 };

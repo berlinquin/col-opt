@@ -74,6 +74,20 @@ combination_generator2::combination_generator2(int _n, int _k)
          m_index[i] = i;
       }
 
+      // for 6_C_3, max_indices holds [3,4,5]
+      m_max_indices = std::vector<int>(K);
+      const int base_index = N-K;
+      for (int i = 0; i < K; i++)
+      {
+         m_max_indices[i] = base_index+i;
+      }
+      printf("m_max_indices: [");
+      for (int i : m_max_indices)
+      {
+         printf("%d ", i);
+      }
+      printf("]\n");
+
       // m_max[i] holds the cumulative max of indices
       //   in range [i, N)
       m_max = std::vector<int>(K-1);
@@ -91,6 +105,9 @@ combination_generator2::combination_generator2(int _n, int _k)
          printf("%d ", i);
       }
       printf("]\n");
+
+      // initialize m_sum
+      m_sum = std::vector<int>(K-1);
    }
 }
 
@@ -121,18 +138,29 @@ std::vector<int> combination_generator2::next()
    }
    else
    {
-      for (int i = K-1; i >= 0; i--)
+      // increment i
+      m_index[0] += (m_sum[0] == m_max[0]);
+      // increment j
+      for (int i = 1; i < K-1; i++)
       {
-         m_index[i]++;
-         if (m_index[i] <= (N-K+i))
+         m_index[i] += (m_sum[i] == m_max[i]);
+         if (m_index[i] > m_max_indices[i])
          {
-            // i is good, now update all later indices
-            for (int j = i+1; j < K; j++)
-            {
-               m_index[j] = m_index[j-1]+1;
-            }
-            break;
+            m_index[i] = m_index[i-1] + 1;
          }
+      }
+      // increment last index
+      ++m_index[K-1];
+      if (m_index[K-1] == N)
+      {
+         m_index[K-1] = m_index[K-2] + 1;
+      }
+      // Invariant: For i in range [0, K-1),
+      //            m_sum[i] = SUM(j=i+1, j<K, m_index[j])
+      m_sum[K-2] = m_index[K-1];
+      for (int i = K-3; i >= 0; i--)
+      {
+         m_sum[i] = m_sum[i+1] + m_index[i+1];
       }
    }
    return to_return;
