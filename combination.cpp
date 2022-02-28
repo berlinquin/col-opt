@@ -46,8 +46,58 @@ std::vector<int> combination_generator::next()
 }
 
 
+
 // Generator that returns a pointer from next() 
 combination_generator_pointer::combination_generator_pointer(int _n, int _k)
+   : N(_n)
+   , K(_k)
+{
+   // check values for N and K
+   if (N < 0 || K < 0 || K > N)
+   {
+      throw std::domain_error("Bad values for N-choose-K");
+   }
+   // m_index_A is a vector of size K
+   m_index = std::vector<int>(K);
+   for (int i = 0; i < K; i++)
+   {
+      m_index[i] = i;
+   }
+   m_to_return = std::vector<int>(K);
+}
+
+bool combination_generator_pointer::has_next()
+{
+   return m_index[0] < (N-K+1);
+}
+
+const int* combination_generator_pointer::next()
+{
+   // Copy m_index to m_to_return
+   for (int i = 0; i < K; i++)
+   {
+      m_to_return[i] = m_index[i];
+   }
+   for (int i = K-1; i >= 0; i--)
+   {
+      m_index[i] = m_index[i]+1;
+      if (m_index[i] <= (N-K+i))
+      {
+         // i is good, now update all later indices
+         for (int j = i+1; j < K; j++)
+         {
+            m_index[j] = m_index[j-1]+1;
+         }
+         break;
+      }
+   }
+   return m_to_return.data();
+}
+
+
+
+// Use a double buffer
+combination_generator_ping_pong::combination_generator_ping_pong(int _n, int _k)
    : N(_n)
    , K(_k)
    , m_return_A(true)
@@ -67,14 +117,14 @@ combination_generator_pointer::combination_generator_pointer(int _n, int _k)
    m_index_B = std::vector<int>(K);
 }
 
-bool combination_generator_pointer::has_next()
+bool combination_generator_ping_pong::has_next()
 {
    return m_return_A
       ? m_index_A[0] < (N-K+1)
       : m_index_B[0] < (N-K+1);
 }
 
-const int* combination_generator_pointer::next()
+const int* combination_generator_ping_pong::next()
 {
    // Return the array indicated by m_return_A
    const int *to_return = m_return_A 

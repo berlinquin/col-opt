@@ -33,8 +33,8 @@ void time_generator(int N, int K)
 }
 
 // Specialize for pointer class
-template<>
-void time_generator<combination_generator_pointer>(int N, int K)
+template<typename T>
+void time_generator_pointer(int N, int K)
 {
    // Use the std::chrono library for timekeeping
    using clock = std::chrono::steady_clock;
@@ -42,7 +42,7 @@ void time_generator<combination_generator_pointer>(int N, int K)
    // Time the generator
    auto start = clock::now();
    int count = 0;
-   combination_generator_pointer cg(N, K);
+   T cg(N, K);
    while (cg.has_next())
    {
       const int *c = cg.next();
@@ -66,16 +66,19 @@ void time_generator<combination_generator_pointer>(int N, int K)
 int main(int argc, char *argv[])
 {
    // Pass same args to different generators
-   const int N = 30;
-   const int K = 10;
+   const int N = 34;
+   const int K = 17;
 
-   printf("O(N^2) generator\n");
-   time_generator<combination_generator>(N, K);
+   //printf("O(N^2) generator\n");
+   //time_generator<combination_generator>(N, K);
 
    printf("O(N^2) pointer generator\n");
-   time_generator<combination_generator_pointer>(N, K);
+   time_generator_pointer<combination_generator_pointer>(N, K);
 
-   printf("O(N) generator\n");
-   time_generator<combination_generator2>(N, K);
+   printf("O(N^2) ping-pong generator\n");
+   time_generator_pointer<combination_generator_ping_pong>(N, K);
+
+   //printf("O(N) generator\n");
+   //time_generator<combination_generator2>(N, K);
    return 0;
 }
