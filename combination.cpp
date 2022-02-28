@@ -1,6 +1,7 @@
 #include "combination.h"
 #include <stdexcept>
 
+// Simplest algorithm to generate combinations
 combination_generator::combination_generator(int _n, int _k)
    : N(_n)
    , K(_k)
@@ -47,7 +48,7 @@ std::vector<int> combination_generator::next()
 
 
 
-// Generator that returns a pointer from next() 
+// Return a pointer from next() instead of returning a std::vector object
 combination_generator_pointer::combination_generator_pointer(int _n, int _k)
    : N(_n)
    , K(_k)
@@ -96,7 +97,8 @@ const int* combination_generator_pointer::next()
 
 
 
-// Use a double buffer
+// Return a pointer from next(),
+// and use a double buffer to avoid unnecessary copies
 combination_generator_ping_pong::combination_generator_ping_pong(int _n, int _k)
    : N(_n)
    , K(_k)
@@ -165,8 +167,9 @@ const int* combination_generator_ping_pong::next()
 
 
 
-// SECOND GENERATOR
-
+// Implement an O(K) algorithm in next() that just needs to make
+// one pass over the m_index array.
+// Need to handle cases for K=1 and K=2 separately.
 combination_generator2::combination_generator2(int _n, int _k)
    : N(_n)
    , K(_k)

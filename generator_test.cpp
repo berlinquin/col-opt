@@ -66,11 +66,8 @@ void time_generator_pointer(int N, int K)
 int main(int argc, char *argv[])
 {
    // Pass same args to different generators
-   const int N = 34;
-   const int K = 17;
-
-   //printf("O(N^2) generator\n");
-   //time_generator<combination_generator>(N, K);
+   const int N = 26;
+   const int K = 13;
 
    printf("O(N^2) pointer generator\n");
    time_generator_pointer<combination_generator_pointer>(N, K);
@@ -78,7 +75,10 @@ int main(int argc, char *argv[])
    printf("O(N^2) ping-pong generator\n");
    time_generator_pointer<combination_generator_ping_pong>(N, K);
 
-   //printf("O(N) generator\n");
-   //time_generator<combination_generator2>(N, K);
+   printf("O(N^2) generator\n");
+   time_generator<combination_generator>(N, K);
+
+   printf("O(N) generator\n");
+   time_generator<combination_generator2>(N, K);
    return 0;
 }
