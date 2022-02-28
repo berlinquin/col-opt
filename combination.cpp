@@ -59,10 +59,10 @@ combination_generator2::combination_generator2(int _n, int _k)
    if (K == 1)
    {
       m_index = std::vector<int> { 0 };
-      m_max = std::vector<int> { N-K };
    }
    else if (K == 2)
    {
+      m_index = std::vector<int> { 0, 1 };
    }
    else
    {
@@ -74,28 +74,16 @@ combination_generator2::combination_generator2(int _n, int _k)
          m_index[i] = i;
       }
 
-      // for 6_C_3, max_indices holds [3,4,5]
-      std::vector<int> max_indices(K);
-      const int base_index = N-K;
-      for (int i = 0; i < K; i++)
-      {
-         max_indices[i] = base_index+i;
-      }
-      printf("max_indices: [");
-      for (int i : max_indices)
-      {
-         printf("%d ", i);
-      }
-      printf("]\n");
-
       // m_max[i] holds the cumulative max of indices
       //   in range [i, N)
       m_max = std::vector<int>(K-1);
-      m_max[K-2] = max_indices[K-1];
+      int max_index = N-1;
+      m_max[K-2] = max_index;
       // for 6_C_3, m_max holds [9,5]
       for (int i = K-3; i >= 0; i--)
       {
-         m_max[i] = m_max[i+1] + max_indices[i+1];
+         --max_index;
+         m_max[i] = m_max[i+1] + max_index;
       }
       printf("m_max: [");
       for (int i : m_max)
@@ -116,20 +104,37 @@ std::vector<int> combination_generator2::next()
    // Make a copy of index
    std::vector<int> to_return = m_index;
 
-   for (int i = K-1; i >= 0; i--)
+   if (K == 1)
    {
-      m_index[i]++;
-      if (m_index[i] <= (N-K+i))
+      ++m_index[0];
+   }
+   else if (K == 2)
+   {
+      // increment i
+      m_index[0] += (m_index[1] == N-1);
+      // increment j
+      ++m_index[1];
+      if (m_index[1] == N)
       {
-         // i is good, now update all later indices
-         for (int j = i+1; j < K; j++)
-         {
-            m_index[j] = m_index[j-1]+1;
-         }
-         break;
+         m_index[1] = m_index[0] + 1;
       }
    }
-
+   else
+   {
+      for (int i = K-1; i >= 0; i--)
+      {
+         m_index[i]++;
+         if (m_index[i] <= (N-K+i))
+         {
+            // i is good, now update all later indices
+            for (int j = i+1; j < K; j++)
+            {
+               m_index[j] = m_index[j-1]+1;
+            }
+            break;
+         }
+      }
+   }
    return to_return;
 }
 

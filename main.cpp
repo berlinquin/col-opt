@@ -17,8 +17,9 @@ void printUsage()
 int main(int argc, char *argv[])
 {
    // TEMP test the different combination fns
-   combination_generator2 cg(6, 3);
+   combination_generator2 cg(6, 4);
    printf("combinations:\n");
+   int count = 0;
    while (cg.has_next())
    {
       std::vector<int> c = cg.next();
@@ -28,7 +29,9 @@ int main(int argc, char *argv[])
          printf("%d ", i);
       }
       printf("]\n");
+      ++count;
    }
+   printf("number of combinations: %d\n", count);
    return 0;
 
    // Alias the std::filesystem namespace
