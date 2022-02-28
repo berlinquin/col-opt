@@ -21,6 +21,30 @@ private:
    std::vector<int> m_index;
 };
 
+
+// Return a pointer instead of an object from next()
+class combination_generator_pointer
+{
+public:
+   // Construct a generator for all combinations in "n-choose-k"
+   combination_generator_pointer(int n, int k);
+
+   // Return k values in the range [0, n)
+   // to give the indices of the elements in this combination
+   const int* next();
+
+   // True if there is another combination
+   bool has_next();
+
+private:
+   const int N;
+   const int K;
+   bool m_return_A;
+   std::vector<int> m_index_A;
+   std::vector<int> m_index_B;
+};
+
+
 // Run an O(n) instead of O(n2) algorithm in next()
 class combination_generator2
 {

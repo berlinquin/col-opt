@@ -45,6 +45,76 @@ std::vector<int> combination_generator::next()
    return to_return;
 }
 
+
+// Generator that returns a pointer from next() 
+combination_generator_pointer::combination_generator_pointer(int _n, int _k)
+   : N(_n)
+   , K(_k)
+   , m_return_A(true)
+{
+   // check values for N and K
+   if (N < 0 || K < 0 || K > N)
+   {
+      throw std::domain_error("Bad values for N-choose-K");
+   }
+   // m_index_A is a vector of size K
+   m_index_A = std::vector<int>(K);
+   for (int i = 0; i < K; i++)
+   {
+      m_index_A[i] = i;
+   }
+   // m_index_B is a vector of size K
+   m_index_B = std::vector<int>(K);
+}
+
+bool combination_generator_pointer::has_next()
+{
+   return m_return_A
+      ? m_index_A[0] < (N-K+1)
+      : m_index_B[0] < (N-K+1);
+}
+
+const int* combination_generator_pointer::next()
+{
+   // Return the array indicated by m_return_A
+   const int *to_return = m_return_A 
+      ? m_index_A.data() : m_index_B.data();
+
+   // Get references to correct buffer
+   std::vector<int> &to_update = m_return_A
+      ? m_index_B : m_index_A;
+   std::vector<int> &old = m_return_A
+      ? m_index_A : m_index_B;
+
+   // Toggle value of status for the next call to next()
+   m_return_A ^= true;
+
+   int i = K-1;
+   for (; i >= 0; i--)
+   {
+      to_update[i] = old[i]+1;
+      if (to_update[i] <= (N-K+i))
+      {
+         // i is good, now update all later indices
+         for (int j = i+1; j < K; j++)
+         {
+            to_update[j] = to_update[j-1]+1;
+         }
+         break;
+      }
+   }
+   // If break early, copy over rest of buffer
+   --i;
+   for (; i >= 0; i--)
+   {
+      to_update[i] = old[i];
+   }
+
+   return to_return;
+}
+
+
+
 // SECOND GENERATOR
 
 combination_generator2::combination_generator2(int _n, int _k)
