@@ -18,6 +18,14 @@ colopt.o: colopt.h colopt.cpp table.h combination.h
 combination.o: combination.h combination.cpp
 	g++ $(CPP_FLAGS) -c combination.cpp
 
+# Separate function to test generators
+gentest: generator_test.o
+	g++ $(CPP_FLAGS) -o gentest generator_test.o combination.o
+
+generator_test.o: generator_test.cpp combination.o
+	g++ $(CPP_FLAGS) -c generator_test.cpp
+
+# PHONY targets
 clean:
 	rm colopt *.o
 

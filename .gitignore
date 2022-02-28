@@ -1,5 +1,6 @@
 # binary files produced by make
 colopt
+gentest
 *.o
 
 # vim state
