@@ -1,23 +1,33 @@
-# Include debug symbols and use c++17
-CPP_FLAGS = -g -std=c++17
+# Compiler flags
+# -g   include debug symbols
+# -std use c++17 standard
+# -I   add to the search path for #includes
+CPP_FLAGS = -g -std=c++17 -I include/ -I ./
 
 .PHONY: clean time
 
-# Original command-line program
-colopt: main.o parser.o colopt.o combination.o
-	g++ $(CPP_FLAGS) -o colopt main.o parser.o colopt.o combination.o
+# Look for dependencies in src/ and include/ directories
+VPATH = src:include
 
+# Original command-line program
+
+# $@ is the name of the target (colopt in this case)
+# $^ is the list of all prerequisites
+colopt: main.o parser.o colopt.o combination.o
+	g++ $(CPP_FLAGS) -o $@ $^
+
+# $< is the first prerequisite (main.cpp in this case)
 main.o: main.cpp parser.h table.h colopt.h combination.h
-	g++ $(CPP_FLAGS) -c main.cpp
+	g++ $(CPP_FLAGS) -c $<
 
 parser.o: parser.cpp rapidcsv/rapidcsv.h parser.h table.h
-	g++ $(CPP_FLAGS) -c parser.cpp
+	g++ $(CPP_FLAGS) -c $<
 
 colopt.o: colopt.cpp colopt.h table.h combination.h
-	g++ $(CPP_FLAGS) -c colopt.cpp
+	g++ $(CPP_FLAGS) -c $<
 
 combination.o: combination.cpp combination.h
-	g++ $(CPP_FLAGS) -c combination.cpp
+	g++ $(CPP_FLAGS) -c $<
 
 # Separate program to test generators
 gentest: generator_test.o combination.o
