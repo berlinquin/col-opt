@@ -31,10 +31,10 @@ combination.o: combination.cpp combination.h
 
 # Separate program to test generators
 gentest: generator_test.o combination.o
-	g++ $(CPP_FLAGS) -o gentest generator_test.o combination.o
+	g++ $(CPP_FLAGS) -o gentest $^
 
 generator_test.o: generator_test.cpp combination.h
-	g++ $(CPP_FLAGS) -c generator_test.cpp
+	g++ $(CPP_FLAGS) -c $<
 
 # PHONY targets
 clean:
