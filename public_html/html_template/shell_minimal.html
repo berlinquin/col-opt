@@ -67,7 +67,15 @@
     
     <hr/>
     <textarea class="emscripten" id="output" rows="8"></textarea>
-    <hr>
+    <hr/>
+    <div id="csvcontainer">
+      <label for="csvinput">Upload a CSV spreadsheet:</label>
+      <br/>
+      <input type="file" id="csvinput" name="csvinput" accept=".csv">
+      <br/>
+      <button>Submit</button>
+    </div>
+    <hr/>
     <script src="js/papaparse.min.js"></script>
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
@@ -140,6 +148,36 @@
           if (text) Module.printErr('[post-exception status] ' + text);
         };
       };
+      // Added by me
+      // Get a reference to the file input element
+      const input = document.querySelector('#csvinput');
+      // Add an event listener to input
+      input.addEventListener('change', parse_csv);
+
+      function parse_csv() {
+              console.log('parse_csv()');
+              // div to put status message in
+              const container = document.querySelector('#csvcontainer');
+              // Read files from the input element
+              const inputFiles = input.files;
+              if (inputFiles.length === 0) {
+                      const p = document.createElement('p');
+                      p.textContent = 'No file selected for upload';
+                      container.appendChild(p);
+                    }
+              else if (inputFiles.length > 1) {
+                      const p = document.createElement('p');
+                      p.textContent = 'Too many files selected, please select only one';
+                      container.appendChild(p);
+                    }
+              else {
+                      const file = inputFiles[0];
+                      const p = document.createElement('p');
+                      p.textContent = `Selected file: "${file.name}"`;
+                      container.appendChild(p);
+                    }
+      }
+
     </script>
     {{{ SCRIPT }}}
   </body>
