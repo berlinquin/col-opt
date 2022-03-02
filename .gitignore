@@ -3,5 +3,10 @@ colopt
 gentest
 *.o
 
+# files produced by wasm toolchain
+index.html
+index.js
+index.wasm
+
 # vim state
 *.swp
