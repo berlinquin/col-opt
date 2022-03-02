@@ -4,7 +4,7 @@
 #include "combination.h"
 
 template <typename T>
-void time_generator(int N, int K)
+void time_generator_vector(int N, int K)
 {
    // Use the std::chrono library for timekeeping
    using clock = std::chrono::steady_clock;
@@ -70,15 +70,15 @@ int main(int argc, char *argv[])
    const int K = 13;
 
    printf("O(N^2) pointer generator\n");
-   time_generator_pointer<combination_generator_pointer>(N, K);
+   time_generator_pointer<combination_generator::simple_pointer>(N, K);
 
    printf("O(N^2) ping-pong generator\n");
-   time_generator_pointer<combination_generator_ping_pong>(N, K);
+   time_generator_pointer<combination_generator::ping_pong>(N, K);
 
    printf("O(N^2) generator\n");
-   time_generator<combination_generator>(N, K);
+   time_generator_vector<combination_generator::simple_vector>(N, K);
 
    printf("O(N) generator\n");
-   time_generator<combination_generator2>(N, K);
+   time_generator_vector<combination_generator::single_pass>(N, K);
    return 0;
 }

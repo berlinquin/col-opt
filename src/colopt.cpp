@@ -45,7 +45,7 @@ void optimize(const table_type& table, int width)
    // vector of size COLS
    std::vector<int> widths(COLS);
 
-   combination_generator cg(usable_width-1, COLS-1);
+   combination_generator::simple_vector cg(usable_width-1, COLS-1);
    int i = 0;
    int min_cost = INT_MAX;
    std::vector<int> min_widths;
