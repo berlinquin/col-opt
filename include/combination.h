@@ -22,6 +22,7 @@ private:
 };
 
 
+
 // Return a pointer instead of an object from next()
 class combination_generator_pointer
 {
@@ -42,6 +43,7 @@ private:
    std::vector<int> m_index;
    std::vector<int> m_to_return;
 };
+
 
 
 // Use a double buffer
@@ -65,6 +67,7 @@ private:
    std::vector<int> m_index_A;
    std::vector<int> m_index_B;
 };
+
 
 
 // Run an O(n) instead of O(n2) algorithm in next()
