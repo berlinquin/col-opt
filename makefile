@@ -2,7 +2,7 @@
 # -g   include debug symbols
 # -std use c++17 standard
 # -I   add to the search path for #includes
-CPP_FLAGS = -g -std=c++17 -I include/ -I ./
+CPP_FLAGS = -g -std=c++17 -I include/
 
 .PHONY: clean time
 
