@@ -74,6 +74,9 @@
       <input type="file" id="csvinput" name="csvinput" accept=".csv">
       <br/>
       <button>Submit</button>
+      <br/>
+      <table id="csvtable">
+      </table>
     </div>
     <hr/>
     <script src="js/papaparse.min.js"></script>
@@ -176,9 +179,18 @@
                       p.textContent = `Selected file: "${file.name}"`;
                       container.appendChild(p);
 
+                      const table = document.querySelector('#csvtable');
+
                       function step_callback(results, parser) {
+                              const row = document.createElement('tr');
+                              for (const cell of results.data) {
+                                      const td = document.createElement('td');
+                                      td.textContent = cell;
+                                      row.appendChild(td);
+                                    }
+                              table.appendChild(row);
                               console.log("Row data:", results.data);
-                              console.log("Row errors:", results.errors);
+                              //console.log("Row errors:", results.errors);
                             }
 
                       function complete_callback(results, file) {
@@ -191,6 +203,7 @@
 
                       // Build config object with necessary callbacks
                       const config = {
+                              preview: 20,
                               step: step_callback,
                               complete: complete_callback,
                               error: error_callback
