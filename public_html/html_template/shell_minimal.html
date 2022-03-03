@@ -175,6 +175,28 @@
                       const p = document.createElement('p');
                       p.textContent = `Selected file: "${file.name}"`;
                       container.appendChild(p);
+
+                      function step_callback(results, parser) {
+                              console.log("Row data:", results.data);
+                              console.log("Row errors:", results.errors);
+                            }
+
+                      function complete_callback(results, file) {
+                              console.log("Parsing complete:", results, file);
+                            }
+
+                      function error_callback(error, file) {
+                              console.log("Error:", error, file);
+                            }
+
+                      // Build config object with necessary callbacks
+                      const config = {
+                              step: step_callback,
+                              complete: complete_callback,
+                              error: error_callback
+                            };
+                      const csv = Papa.parse(file, config);
+                      console.log(csv);
                     }
       }
 
