@@ -151,6 +151,7 @@
           if (text) Module.printErr('[post-exception status] ' + text);
         };
       };
+
       // Added by me
       // Get a reference to the file input element
       const input = document.querySelector('#csvinput');
@@ -158,61 +159,66 @@
       input.addEventListener('change', parse_csv);
 
       function parse_csv() {
-              console.log('parse_csv()');
-              // div to put status message in
-              const container = document.querySelector('#csvcontainer');
-              // Read files from the input element
-              const inputFiles = input.files;
-              if (inputFiles.length === 0) {
-                      const p = document.createElement('p');
-                      p.textContent = 'No file selected for upload';
-                      container.appendChild(p);
-                    }
-              else if (inputFiles.length > 1) {
-                      const p = document.createElement('p');
-                      p.textContent = 'Too many files selected, please select only one';
-                      container.appendChild(p);
-                    }
-              else {
-                      const file = inputFiles[0];
-                      const p = document.createElement('p');
-                      p.textContent = `Selected file: "${file.name}"`;
-                      container.appendChild(p);
+        console.log('parse_csv()');
+        // div to put status message in
+        const container = document.querySelector('#csvcontainer');
+        // Read files from the input element
+        const inputFiles = input.files;
+        if (inputFiles.length === 0) {
+          const p = document.createElement('p');
+          p.textContent = 'No file selected for upload';
+          container.appendChild(p);
+        }
+        else if (inputFiles.length > 1) {
+          const p = document.createElement('p');
+          p.textContent = 'Too many files selected, please select only one';
+          container.appendChild(p);
+        }
+        else {
+          const file = inputFiles[0];
+          const p = document.createElement('p');
+          p.textContent = `Selected file: "${file.name}"`;
+          container.appendChild(p);
 
-                      const table = document.querySelector('#csvtable');
+          const table = document.querySelector('#csvtable');
 
-                      function step_callback(results, parser) {
-                              const row = document.createElement('tr');
-                              for (const cell of results.data) {
-                                      const td = document.createElement('td');
-                                      td.textContent = cell;
-                                      row.appendChild(td);
-                                    }
-                              table.appendChild(row);
-                              console.log("Row data:", results.data);
-                              //console.log("Row errors:", results.errors);
-                            }
+          const table_lengths = Array();
 
-                      function complete_callback(results, file) {
-                              console.log("Parsing complete:", results, file);
-                            }
+          function step_callback(results, parser) {
+            const row = document.createElement('tr');
+            for (const cell of results.data) {
+              const td = document.createElement('td');
+              td.textContent = cell;
+              row.appendChild(td);
+            }
+            table.appendChild(row);
+            console.log("Row data:", results.data);
+            //console.log("Row errors:", results.errors);
+          }
 
-                      function error_callback(error, file) {
-                              console.log("Error:", error, file);
-                            }
+          function complete_callback(results, file) {
+            console.log("Parsing complete:", results, file);
+            // TODO create a typed array with (row * column entries)
+            //      allocate a wasm buffer through Module
+            //      copy the typed array into the wasm buffer
+            //      call a C++ fn to process the data in the wasm buffer
+          }
 
-                      // Build config object with necessary callbacks
-                      const config = {
-                              preview: 20,
-                              step: step_callback,
-                              complete: complete_callback,
-                              error: error_callback
-                            };
-                      const csv = Papa.parse(file, config);
-                      console.log(csv);
-                    }
+          function error_callback(error, file) {
+            console.log("Error:", error, file);
+          }
+
+          // Build config object with necessary callbacks
+          const config = {
+            preview: 20,
+            step: step_callback,
+            complete: complete_callback,
+            error: error_callback
+          };
+          const csv = Papa.parse(file, config);
+          console.log(csv);
+        }
       }
-
     </script>
     {{{ SCRIPT }}}
   </body>
