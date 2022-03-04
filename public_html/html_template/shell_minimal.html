@@ -158,6 +158,63 @@
       // Add an event listener to input
       input.addEventListener('change', parse_csv);
 
+      const maxRows = 30;
+      var rowsParsed = 0;
+      var completed = false;
+      const tdLengths = Array();
+
+      const table = document.querySelector('#csvtable');
+
+      function parsing_complete() {
+        // Only run this function once
+        if (completed)
+          return;
+        completed = true;
+        // TODO create a typed array with (row * column entries)
+        //const buffer = new ArrayBuffer(x);
+        //Uint16Array
+        //      allocate a wasm buffer through Module
+        //      copy the typed array into the wasm buffer
+        //      call a C++ fn to process the data in the wasm buffer
+      }
+      
+      // Called to process each row in the csv
+      function step_callback(results, parser) {
+        rowsParsed += 1;
+        console.log('step_callback():', rowsParsed);
+        //console.log('results:', results);
+        // Only process up to maxRows
+        if (rowsParsed === maxRows) {
+          console.log('parser:', parser);
+          console.log('parser.abort()');
+          parser.abort();
+          parsing_complete();
+        }
+
+        const row = document.createElement('tr');
+        for (const cell of results.data) {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          row.appendChild(td);
+        }
+        table.appendChild(row);
+      }
+      
+      // Called when all rows in the CSV have been processed.
+      // NOT called if config.preview is set, and total rows > config.preview
+      function complete_callback(results, file) {
+        console.log("complete_callback()");
+        console.log("results:", results);
+        console.log("file:", file);
+        // Delegate work to parsing_complete
+        parsing_complete();
+      }
+      
+      // Called if there's an error parsing the csv file
+      function error_callback(error, file) {
+        console.log("Error:", error, file);
+      }
+
       function parse_csv() {
         console.log('parse_csv()');
         // div to put status message in
@@ -180,43 +237,16 @@
           p.textContent = `Selected file: "${file.name}"`;
           container.appendChild(p);
 
-          const table = document.querySelector('#csvtable');
-
-          const table_lengths = Array();
-
-          function step_callback(results, parser) {
-            const row = document.createElement('tr');
-            for (const cell of results.data) {
-              const td = document.createElement('td');
-              td.textContent = cell;
-              row.appendChild(td);
-            }
-            table.appendChild(row);
-            console.log("Row data:", results.data);
-            //console.log("Row errors:", results.errors);
-          }
-
-          function complete_callback(results, file) {
-            console.log("Parsing complete:", results, file);
-            // TODO create a typed array with (row * column entries)
-            //      allocate a wasm buffer through Module
-            //      copy the typed array into the wasm buffer
-            //      call a C++ fn to process the data in the wasm buffer
-          }
-
-          function error_callback(error, file) {
-            console.log("Error:", error, file);
-          }
-
           // Build config object with necessary callbacks
           const config = {
-            preview: 20,
+            //preview: maxRows,
+            skipEmptyLines: true,
             step: step_callback,
             complete: complete_callback,
             error: error_callback
           };
-          const csv = Papa.parse(file, config);
-          console.log(csv);
+          Papa.parse(file, config);
+          console.log("Papa.parse() returned");
         }
       }
     </script>
