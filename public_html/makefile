@@ -9,7 +9,7 @@ index.html: hello3.c shell_minimal.html
 		--shell-file html_template/shell_minimal.html \
 		-s NO_EXIT_RUNTIME \
 		-s "EXPORTED_RUNTIME_METHODS=['ccall']" \
-		-s "EXPORTED_FUNCTIONS=['_main']"
+		-s "EXPORTED_FUNCTIONS=['_main','_malloc','_free']"
 
 # PHONY targets
 clean:
