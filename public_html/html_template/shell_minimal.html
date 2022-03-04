@@ -173,9 +173,9 @@
           return;
         completed = true;
         // Create a buffer of 16-bit ints
-        //const buffer = new ArrayBuffer(rowsParsed * columns * 2);
+        const buffer = new ArrayBuffer(rowsParsed * columns * 2);
         //const jsBuffer = new Uint16Array(buffer);
-        const jsBuffer = new Uint16Array(rowsParsed * columns);
+        const jsBuffer = new Uint16Array(buffer);
         console.log(`jsBuffer has size ${jsBuffer.byteLength} bytes`);
         console.log(`jsBuffer holds ${jsBuffer.length} elements`);
         console.log(`jsBuffer bytes per element: ${jsBuffer.BYTES_PER_ELEMENT}`);
@@ -199,8 +199,8 @@
         var wasmBuffer = Module._malloc(jsBuffer.byteLength);
         console.log(`wasmBuffer has address ${wasmBuffer}`);
         // Copy buffer to wasm heap
-        var shortOffset = wasmBuffer / 2;
-        Module.HEAPU16.set(jsBuffer, shortOffset)
+        const byteView = new Uint8Array(buffer);
+        Module.HEAPU8.set(byteView, wasmBuffer);
         // call a C++ fn to process the data in the wasm buffer
         Module._process_table(wasmBuffer, rowsParsed, columns);
         // Free the wasm buffer
