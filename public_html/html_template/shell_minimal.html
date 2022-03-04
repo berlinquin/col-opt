@@ -162,9 +162,9 @@
       var rowsParsed = 0;
       var columns = 0;
       var completed = false;
-      const tdLengths = Array();
 
       const table = document.getElementById('csvtable');
+      var cellLengths = Array();
 
       function parsing_complete() {
         console.log('parsing_complete()');
@@ -173,41 +173,34 @@
           return;
         completed = true;
         // Create a buffer of 16-bit ints
+        //const buffer = new ArrayBuffer(rowsParsed * columns * 2);
+        //const jsBuffer = new Uint16Array(buffer);
         const jsBuffer = new Uint16Array(rowsParsed * columns);
-        console.log('table.children:', table.children);
+        console.log(`jsBuffer has size ${jsBuffer.byteLength} bytes`);
+        console.log(`jsBuffer holds ${jsBuffer.length} elements`);
+        console.log(`jsBuffer bytes per element: ${jsBuffer.BYTES_PER_ELEMENT}`);
+        console.log(`rowsParsed = ${rowsParsed}, columns = ${columns}`);
+        console.log(`expected size = ${rowsParsed * columns * 2}`);
         // Initialize buffer with lengths of cells in table
         // For each row in table
-        var i = 0;
-        var j = 0;
-        for (const tr of table.children) {
-          // check that tr is element type <tr>
-          var tagName = tr.tagName.toLowerCase();
-          if (tagName !== 'tr') {
-            console.log(`Error: element of type ${tagName} in table`);
-            break;
+        for (var i = 0; i < rowsParsed; i++) {
+          var rowStr = '';
+          for (var j = 0; j < columns; j++) {
+            var index = i*columns + j;
+            //console.log(`cellLengths[${i}][${j}]`);
+            //jsBuffer[index] = cellLengths[i][j];
+            // How does this indexing work???
+            jsBuffer[index] = 5;
+            rowStr += jsBuffer[index] + ', ';
           }
-          j = 0;
-          for (const td of tr.children) {
-            tagName = td.tagName.toLowerCase();
-            if (tagName !== 'td') {
-              console.log(`Error: element of type ${tagName} in table row`);
-              break;
-            }
-            console.log(`cell[${i}][${j}] = ${td.textContent}`);
-            var textLen = td.textContent.length;
-            jsBuffer[i*columns + j] = textLen;
-            j += 1;
-            if (j >= columns)
-              break;
-          }
-          i += 1;
-          if (i >= rowsParsed)
-            break;
+          console.log(`row ${i}: [${rowStr}]`);
         }
         // Allocate a wasm buffer through Module
-        var wasmBuffer = Module._malloc(buffer.length * buffer.BYTES_PER_ELEMENT);
+        var wasmBuffer = Module._malloc(jsBuffer.byteLength);
+        console.log(`wasmBuffer has address ${wasmBuffer}`);
         // Copy buffer to wasm heap
-        Module.HEAPU8.set(jsBuffer, wasmBuffer)
+        var shortOffset = wasmBuffer / 2;
+        Module.HEAPU16.set(jsBuffer, shortOffset)
         // call a C++ fn to process the data in the wasm buffer
         Module._process_table(wasmBuffer, rowsParsed, columns);
         // Free the wasm buffer
@@ -220,24 +213,34 @@
         //console.log('results:', results);
         // Run on first call to function
         if (rowsParsed === 0) {
+          // The number of columns in the first row determines
+          // how many columns are read in all succeeding rows
           columns = results.data.length;
         }
-        rowsParsed += 1;
+
+        lengths = Array();
+        const row = document.createElement('tr');
+        for (const cell of results.data) {
+          // Add a td element to the row
+          const td = document.createElement('td');
+          td.textContent = cell;
+          row.appendChild(td);
+          // Update array with length of the text
+          lengths.push(cell.length);
+        }
+        // Add a tr element to the table
+        table.appendChild(row);
+        // Update the global array of lengths
+        cellLengths.push(lengths);
+
         // Only process up to maxRows
+        rowsParsed += 1;
         if (rowsParsed === maxRows) {
           console.log('parser:', parser);
           console.log('parser.abort()');
           parser.abort();
           parsing_complete();
         }
-
-        const row = document.createElement('tr');
-        for (const cell of results.data) {
-          const td = document.createElement('td');
-          td.textContent = cell;
-          row.appendChild(td);
-        }
-        table.appendChild(row);
       }
       
       // Called when all rows in the CSV have been processed.
