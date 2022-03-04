@@ -4,8 +4,8 @@
 VPATH = html_template
 
 
-index.html: hello3.c shell_minimal.html
-	emcc -o index.html hello3.c -O0 \
+index.html: hello3.cpp shell_minimal.html
+	emcc -o index.html hello3.cpp -O0 \
 		--shell-file html_template/shell_minimal.html \
 		-s NO_EXIT_RUNTIME \
 		-s "EXPORTED_RUNTIME_METHODS=['ccall']" \
