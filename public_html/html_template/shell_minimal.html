@@ -187,10 +187,7 @@
           var rowStr = '';
           for (var j = 0; j < columns; j++) {
             var index = i*columns + j;
-            //console.log(`cellLengths[${i}][${j}]`);
-            //jsBuffer[index] = cellLengths[i][j];
-            // How does this indexing work???
-            jsBuffer[index] = 5;
+            jsBuffer[index] = cellLengths[i][j];
             rowStr += jsBuffer[index] + ', ';
           }
           console.log(`row ${i}: [${rowStr}]`);
