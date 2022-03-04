@@ -160,29 +160,38 @@
 
       const maxRows = 30;
       var rowsParsed = 0;
+      var columns = 0;
       var completed = false;
       const tdLengths = Array();
 
       const table = document.querySelector('#csvtable');
 
       function parsing_complete() {
+        console.log('parsing_complete()');
         // Only run this function once
         if (completed)
           return;
         completed = true;
-        // TODO create a typed array with (row * column entries)
-        //const buffer = new ArrayBuffer(x);
-        //Uint16Array
-        //      allocate a wasm buffer through Module
-        //      copy the typed array into the wasm buffer
-        //      call a C++ fn to process the data in the wasm buffer
+        // Create a buffer of 16-bit ints
+        const jsBuffer = new Uint16Array(rowsParsed * columns);
+        // Allocate a wasm buffer through Module
+        var wasmBuffer = Module._malloc(buffer.length * buffer.BYTES_PER_ELEMENT);
+        // Copy buffer to wasm heap
+        Module.HEAPU8.set(jsBuffer, wasmBuffer)
+        // call a C++ fn to process the data in the wasm buffer
+        // Free the wasm buffer
+        Module._free(wasmBuffer);
       }
       
       // Called to process each row in the csv
       function step_callback(results, parser) {
-        rowsParsed += 1;
         console.log('step_callback():', rowsParsed);
         //console.log('results:', results);
+        // Run on first call to function
+        if (rowsParsed === 0) {
+          columns = results.data.length;
+        }
+        rowsParsed += 1;
         // Only process up to maxRows
         if (rowsParsed === maxRows) {
           console.log('parser:', parser);
