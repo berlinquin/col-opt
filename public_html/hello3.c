@@ -14,6 +14,13 @@ EMSCRIPTEN_KEEPALIVE void myFunction(int argc, char ** argv) {
     printf("MyFunction Called\n");
 }
 
+EMSCRIPTEN_KEEPALIVE void process_table(uint16_t **table, int rowsParsed, int columns)
+{
+	printf("process_table() called with args:\n"
+			"table: %p, rowsParsed: %d, columns: %d\n",
+			table, rowsParsed, columns);
+}
+
 #ifdef __cplusplus
 }
 #endif

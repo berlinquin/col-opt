@@ -179,6 +179,7 @@
         // Copy buffer to wasm heap
         Module.HEAPU8.set(jsBuffer, wasmBuffer)
         // call a C++ fn to process the data in the wasm buffer
+        Module._process_table(wasmBuffer, rowsParsed, columns);
         // Free the wasm buffer
         Module._free(wasmBuffer);
       }
