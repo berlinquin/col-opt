@@ -1,7 +1,7 @@
 // Copied from Mozilla tutorial: https://developer.mozilla.org/en-US/docs/WebAssembly/C_to_wasm
 #include <stdio.h>
 #include <emscripten/emscripten.h>
-//#include "../include/table.h"
+#include "table.h"
 
 int main() {
     printf("Hello World\n");
@@ -21,6 +21,7 @@ EMSCRIPTEN_KEEPALIVE void process_table(uint16_t *table, int rowsParsed, int col
 			"table: %p, rowsParsed: %d, columns: %d\n",
 			table, rowsParsed, columns);
 	// Print as 2D array
+	printf("Manual pointer arithmetic:\n");
 	for (int i = 0; i < rowsParsed; i++)
 	{
 		printf("row %d: [", i);
@@ -28,6 +29,19 @@ EMSCRIPTEN_KEEPALIVE void process_table(uint16_t *table, int rowsParsed, int col
 		{
 			int index = i*columns + j;
 			uint16_t x = table[index];
+			printf("%hd, ", x);
+		}
+		printf("]\n");
+	}
+	// Print as boost multiarray
+	printf("Boost multiarray:\n");
+	boost::multi_array_ref<uint16_t, 2> boost_table(table, boost::extents[rowsParsed][columns]);
+	for (table_index i  = 0; i < rowsParsed; i++)
+	{
+		printf("row %ld: [", i);
+		for (table_index j = 0; j < columns; j++)
+		{
+			uint16_t x = boost_table[i][j];
 			printf("%hd, ", x);
 		}
 		printf("]\n");
