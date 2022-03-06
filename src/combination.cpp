@@ -1,5 +1,6 @@
 #include "combination.h"
 #include <stdexcept>
+#include <iostream>
 
 namespace combination_generator
 {

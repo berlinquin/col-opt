@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <emscripten/emscripten.h>
 #include "table.h"
+#include "colopt.h"
 
 int main() {
     printf("Hello World\n");
@@ -22,7 +23,7 @@ EMSCRIPTEN_KEEPALIVE void process_table(uint16_t *table, int rowsParsed, int col
 			table, rowsParsed, columns);
 	// Print as boost multiarray
 	printf("Boost multiarray:\n");
-	boost::multi_array_ref<uint16_t, 2> boost_table(table, boost::extents[rowsParsed][columns]);
+	table_type_ref boost_table(table, boost::extents[rowsParsed][columns]);
 	for (table_index i  = 0; i < rowsParsed; i++)
 	{
 		printf("row %ld: [", i);
@@ -33,6 +34,8 @@ EMSCRIPTEN_KEEPALIVE void process_table(uint16_t *table, int rowsParsed, int col
 		}
 		printf("]\n");
 	}
+	// Call to optimize
+	optimize(boost_table, 20);
 }
 
 #ifdef __cplusplus
