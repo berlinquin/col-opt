@@ -4,7 +4,6 @@
 #include "parser.h"
 #include "table.h"
 #include "colopt.h"
-#include "combination.h"
 
 
 
