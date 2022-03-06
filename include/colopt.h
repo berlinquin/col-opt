@@ -1,6 +1,5 @@
 #include <vector>
 #include <cmath>
-#include "table.h"
 #include "combination.h"
 
 // Return the cost of the table
@@ -29,6 +28,9 @@ int cost(const T& table, const std::vector<int>& widths)
 
    const int ROWS = table.shape()[0];
    const int COLS = table.shape()[1];
+
+   // Type alias for the table index type
+   using table_index = typename T::index;
 
    for (table_index i = 0; i < ROWS; i++)
    {
