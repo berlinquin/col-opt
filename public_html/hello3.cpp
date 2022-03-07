@@ -1,5 +1,6 @@
 // Copied from Mozilla tutorial: https://developer.mozilla.org/en-US/docs/WebAssembly/C_to_wasm
 #include <cstdio>
+#include <algorithm>
 #include <emscripten/emscripten.h>
 #include "table.h"
 #include "colopt.h"
@@ -14,7 +15,7 @@ int main() {
 extern "C" {
 #endif
 
-EMSCRIPTEN_KEEPALIVE void process_table(uint16_t *table, int rowsParsed, int columns)
+EMSCRIPTEN_KEEPALIVE int* process_table(uint16_t *table, int rowsParsed, int columns)
 {
 	printf("process_table() called with args:\n"
 			"table: %p, rowsParsed: %d, columns: %d\n",
@@ -33,7 +34,11 @@ EMSCRIPTEN_KEEPALIVE void process_table(uint16_t *table, int rowsParsed, int col
 		printf("]\n");
 	}
 	// Call to optimize
-	optimize(boost_table, 20);
+	std::vector<int> optimal_widths = optimize<>(boost_table, 20);
+	// Copy to widths array to heap and return pointer
+	int *buffer = (int*)calloc(optimal_widths.size(), sizeof(int));
+	std::copy<>(optimal_widths.begin(), optimal_widths.end(), buffer);
+	return buffer;
 }
 
 #ifdef __cplusplus
