@@ -10,7 +10,7 @@ int cost(const T& table, const std::vector<int>& widths);
 // Optimize the table to fit in the given width,
 // printing out optimal width and total lines to stdout
 template<typename T>
-void optimize(const T& table, int width);
+std::vector<int> optimize(const T& table, int width);
 
 
 
@@ -30,12 +30,12 @@ int cost(const T& table, const std::vector<int>& widths)
    const int COLS = table.shape()[1];
 
    // Type alias for the table index type
-   using table_index = typename T::index;
+   using index_type = typename T::index;
 
-   for (table_index i = 0; i < ROWS; i++)
+   for (index_type i = 0; i < ROWS; i++)
    {
       int row_length = 0;
-      for (table_index j = 0; j < COLS; j++)
+      for (index_type j = 0; j < COLS; j++)
       {
          // Divide cell length by the width assigned
          double d = (1.0 * table[i][j]) / widths[j];
@@ -51,7 +51,7 @@ int cost(const T& table, const std::vector<int>& widths)
 
 // optimize() implementation
 template<typename T>
-void optimize(const T& table, int width)
+std::vector<int> optimize(const T& table, int width)
 {
    printf("optimize()\n");
 
@@ -124,4 +124,23 @@ void optimize(const T& table, int width)
       printf("%d ", min_widths[i]);
    }
    printf("]\n");
+   // print out the length of each line in the table
+   using index_type = typename T::index;
+   for (index_type i = 0; i < ROWS; i++)
+   {
+      int row_length = 0;
+      printf("row %ld: [", i);
+      for (index_type j = 0; j < COLS; j++)
+      {
+         // Divide cell length by the width assigned
+         double d = (1.0 * table[i][j]) / widths[j];
+         // Round up to the nearest line
+         int cell_length = std::ceil(d);
+         // Update row length with the max cell length in the row
+         row_length = max(row_length, cell_length);
+         printf("%d, ", table[i][j]);
+      }
+      printf("], %d\n", row_length);
+   }
+   return min_widths;
 }
