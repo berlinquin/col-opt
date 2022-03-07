@@ -5,7 +5,10 @@
 
 bool parse_csv(const std::string& filename, table_type **out)
 {
-   rapidcsv::Document csv_file(filename);
+   // Treat all columns and rows as data (i.e. no header row)
+   rapidcsv::LabelParams lp {-1, -1};
+   // Create a document with the given filename and params
+   rapidcsv::Document csv_file(filename, lp);
    const int ROWS = csv_file.GetRowCount();
    const int COLS = csv_file.GetColumnCount();
    // Create a 2D array with the same dimensions as the csv file
