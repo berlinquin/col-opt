@@ -2,7 +2,8 @@
 // Corporation and others.  All Rights Reserved.
 // This code is licensed under the terms of the Eclipse Public License (EPL).
 
-#include "ClpSimplex.hpp"
+// On debian, headers stored at /usr/include/coin
+#include <coin/ClpSimplex.hpp>
 #include <iomanip>
 
 int main(int argc, const char *argv[])

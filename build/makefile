@@ -33,6 +33,10 @@ gentest: generator_test.o combination.o
 generator_test.o: generator_test.cpp combination.h
 	g++ $(CPP_FLAGS) -c $<
 
+# Separate program to test linear programming library
+clptest: clp/driver.cpp
+	g++ $(CPP_FLAGS) -o $@ $^ -lClp
+
 # PHONY targets
 clean:
 	rm colopt gentest *.o
