@@ -4,7 +4,7 @@
 VPATH = ../src:../include:html_template
 
 
-index.html: hello3.cpp shell_minimal.html combination.o
+index.html: hello3.cpp table.h colopt.h shell_minimal.html combination.o
 	em++ -o index.html hello3.cpp combination.o -O0 \
 		--shell-file html_template/shell_minimal.html \
 		-I ../include \
