@@ -1,8 +1,10 @@
 // Copied from Mozilla tutorial: https://developer.mozilla.org/en-US/docs/WebAssembly/C_to_wasm
-#include <stdio.h>
+#include <cstdio>
 #include <emscripten/emscripten.h>
 #include "table.h"
 #include "colopt.h"
+
+using std::printf;
 
 int main() {
     printf("Hello World\n");
@@ -11,10 +13,6 @@ int main() {
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-EMSCRIPTEN_KEEPALIVE void myFunction(int argc, char ** argv) {
-    printf("MyFunction Called\n");
-}
 
 EMSCRIPTEN_KEEPALIVE void process_table(uint16_t *table, int rowsParsed, int columns)
 {
