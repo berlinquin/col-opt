@@ -204,6 +204,8 @@
         // Create a view of the widths array on the heap
         const optimalWidths = new Int32Array(Module.HEAPU8.buffer, optimalWidthsPointer, columns);
         console.log('optimalWidths:', optimalWidths);
+        // Free the widths buffer
+        Module._free(optimalWidthsPointer);
         // Free the wasm buffer
         Module._free(wasmBuffer);
       }
