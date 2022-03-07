@@ -163,6 +163,9 @@
       var columns = 0;
       var completed = false;
 
+      // div to put status message in
+      const container = document.getElementById('csvcontainer');
+      // table element to put contents of csv in
       const table = document.getElementById('csvtable');
       var cellLengths = Array();
 
@@ -204,6 +207,10 @@
         // Create a view of the widths array on the heap
         const optimalWidths = new Int32Array(Module.HEAPU8.buffer, optimalWidthsPointer, columns);
         console.log('optimalWidths:', optimalWidths);
+        // Print out optimal widths to page
+        const p = document.createElement('p');
+        p.textContent = `Optimal widths for table are: ${optimalWidths.toString()}`;
+        container.appendChild(p);
         // Free the widths buffer
         Module._free(optimalWidthsPointer);
         // Free the wasm buffer
@@ -263,8 +270,6 @@
 
       function parse_csv() {
         console.log('parse_csv()');
-        // div to put status message in
-        const container = document.getElementById('csvcontainer');
         // Read files from the input element
         const inputFiles = input.files;
         if (inputFiles.length === 0) {
