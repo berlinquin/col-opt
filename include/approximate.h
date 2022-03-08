@@ -67,7 +67,6 @@ std::vector<int> approximate(const T& table, int width)
    int *rows = (int*)calloc(numberElements, sizeof(int));
    // Process first TABLE_ROWS columns
    int elementIndex = 0;
-   {
    // Start at one since the row constraints start at the second row
    int rowIndex = 1;
    // Set the first TABLE_ROWS*TABLE_COLS elements
@@ -82,9 +81,7 @@ std::vector<int> approximate(const T& table, int width)
    }
    // Sanity check
    assert(rowIndex == numberRows);
-   //printf("elementIndex: %d, numberElements: %d\n", elementIndex, numberElements);
    assert(elementIndex == (TABLE_ROWS*TABLE_COLS));
-   }
    // Set the remaining TABLE_ROWS*TABLE_COLS + TABLE_COLS elements
    for (int i = 0; i < TABLE_COLS; i++)
    {
@@ -105,6 +102,40 @@ std::vector<int> approximate(const T& table, int width)
    printf("elementIndex: %d, numberElements: %d\n", elementIndex, numberElements);
    assert(elementIndex == numberElements);
 
+   // Elements holds the coefficient on each variable
+   double *elements = (double*)calloc(numberElements, sizeof(double));
+   elementIndex = 0;
+   for (int i = 0; i < TABLE_ROWS; i++)
+   {
+      for (int j = 0; j < TABLE_COLS; j++)
+      {
+         elements[elementIndex] = 1;
+         ++elementIndex;
+      }
+   }
+   // Sanity check
+   assert(elementIndex == (TABLE_ROWS*TABLE_COLS));
+   for (int i = 0; i < TABLE_COLS; i++)
+   {
+      elements[elementIndex] = 1;
+      ++elementIndex;
+      // These indices track positions in the row-major table argument
+      int tableRow = 0;
+      int tableCol = i;
+      for (int i = 0; i < TABLE_ROWS; i++)
+      {
+         int cellLen = table[tableRow][tableCol];
+         double inverse = 1.0 / cellLen;
+         elements[elementIndex] = inverse;
+         ++elementIndex;
+         ++tableRow;
+      }
+   }
+   // Sanity check
+   assert(elementIndex == numberElements);
+
+
+   free(elements);
    free(rows);
    free(length);
    free(start);
