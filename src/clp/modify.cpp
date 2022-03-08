@@ -6,8 +6,8 @@
   This example shows the creation of a model from arrays, solution
   and then changes to objective and adding a row
 */
-#include "ClpSimplex.hpp"
-#include "CoinHelperFunctions.hpp"
+#include <coin/ClpSimplex.hpp>
+#include <coin/CoinHelperFunctions.hpp>
 int main(int argc, const char *argv[])
 {
      ClpSimplex  model;
@@ -32,6 +32,7 @@ int main(int argc, const char *argv[])
      model.loadProblem(matrix, colLower, colUpper, objective,
                        rowLower, rowUpper);
      // mark integer (really for Cbc/examples/modify.cpp
+     // constrains variables x3 and x4 to be integers
      model.setInteger(2);
      model.setInteger(3);
 

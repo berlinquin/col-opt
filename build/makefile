@@ -34,8 +34,11 @@ generator_test.o: generator_test.cpp combination.h
 	g++ $(CPP_FLAGS) -c $<
 
 # Separate program to test linear programming library
-clptest: clp/driver.cpp
+clpdriver: clp/driver.cpp
 	g++ $(CPP_FLAGS) -o $@ $^ -lClp
+
+clpmod: clp/modify.cpp
+	g++ $(CPP_FLAGS) -o $@ $^ -lClp -lCoinUtils
 
 # PHONY targets
 clean:
