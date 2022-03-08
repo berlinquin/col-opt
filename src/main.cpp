@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "table.h"
 #include "colopt.h"
+#include "approximate.h"
 
 
 
@@ -80,7 +81,10 @@ int main(int argc, char *argv[])
    // - print out the optimal column widths
 
    // Do a naive optimization of the table
-   optimize(*cell_lengths, width);
+   optimize<>(*cell_lengths, width);
+
+   // Approximate the best widths with linear programming
+   approximate<>(*cell_lengths, width);
 
    // Print the table of string lengths
    for (table_index i = 0; i < ROWS; i++)

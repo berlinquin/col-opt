@@ -17,7 +17,7 @@ colopt: main.o parser.o combination.o
 	g++ $(CPP_FLAGS) -o $@ $^ && cp colopt ../
 
 # $< is the first prerequisite (main.cpp in this case)
-main.o: main.cpp parser.h table.h colopt.h combination.h
+main.o: main.cpp parser.h table.h colopt.h approximate.h combination.h
 	g++ $(CPP_FLAGS) -c $<
 
 parser.o: parser.cpp rapidcsv/rapidcsv.h parser.h table.h
