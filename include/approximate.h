@@ -62,7 +62,51 @@ std::vector<int> approximate(const T& table, int width)
    // Sanity check that total length is the sum
    assert(std::reduce(length, length+numberColumns) == numberElements);
 
-   free(start);
+   // For each element, rows holds the element's row index
+   // (i.e. which row it belongs to)
+   int *rows = (int*)calloc(numberElements, sizeof(int));
+   // Process first TABLE_ROWS columns
+   int elementIndex = 0;
+   {
+   // Start at one since the row constraints start at the second row
+   int rowIndex = 1;
+   // Set the first TABLE_ROWS*TABLE_COLS elements
+   for (int i = 0; i < TABLE_ROWS; i++)
+   {
+      for (int j = 0; j < TABLE_COLS; j++)
+      {
+         rows[elementIndex] = rowIndex;
+         ++elementIndex;
+         ++rowIndex;
+      }
+   }
+   // Sanity check
+   assert(rowIndex == numberRows);
+   //printf("elementIndex: %d, numberElements: %d\n", elementIndex, numberElements);
+   assert(elementIndex == (TABLE_ROWS*TABLE_COLS));
+   }
+   // Set the remaining TABLE_ROWS*TABLE_COLS + TABLE_COLS elements
+   for (int i = 0; i < TABLE_COLS; i++)
+   {
+      // There's always an entry in the first row for the weight constraint
+      rows[elementIndex] = 0;
+      ++elementIndex;
+      // Offset row index from the the first row
+      // (careful, this hides declaration in parent scope)
+      int rowIndex = 1 + i;
+      for (int j = 0; j < TABLE_ROWS; j++)
+      {
+         rows[elementIndex] = rowIndex;
+         ++elementIndex;
+         rowIndex += TABLE_COLS;
+      }
+   }
+   // Sanity check
+   printf("elementIndex: %d, numberElements: %d\n", elementIndex, numberElements);
+   assert(elementIndex == numberElements);
+
+   free(rows);
    free(length);
+   free(start);
    return std::vector<int> {};
 }
