@@ -138,6 +138,59 @@ std::vector<int> approximate(const T& table, int width)
    CoinPackedMatrix matrix(true, numberRows, numberColumns, numberElements,
          elements, rows, start, length);
 
+   // Initialize the parameters to the model
+
+   // objective holds array of coefficients for all variables in the model.
+   // Linear programming will maximize or minimize the
+   // dot product of this array with all the variables in the model.
+   double *objective = (double*)calloc(numberColumns, sizeof(double));
+   // Initialize the first TABLE_ROWS coefficients to one,
+   // and leave the remaining TABLE_COLS coefficients to be zero
+   for (int i = 0; i < TABLE_ROWS; i++)
+   {
+      objective[i] = 1.0;
+   }
+
+   double *rowLower = (double*)calloc(numberRows, sizeof(double));
+   // Only the first constraint has a lower bound
+   rowLower[0] = width;
+   for (int i = 1; i < numberRows; i++)
+   {
+      rowLower[0] = -COIN_DBL_MAX;
+   }
+
+   double *rowUpper = (double*)calloc(numberRows, sizeof(double));
+   // Only the first constraint has a non-zero upper bound.
+   // All other upper bounds are zero.
+   rowUpper[0] = width;
+
+   double *colLower = (double*)calloc(numberColumns, sizeof(double));
+   for (int i = 0; i < TABLE_ROWS; i++)
+   {
+      // The first TABLE_ROWS variables do not have a lower bound
+      colLower[i] = -COIN_DBL_MAX;
+   }
+   for (int i = 0; i < TABLE_COLS; i++)
+   {
+      // All of the width variables must be at least one.
+      colLower[TABLE_ROWS+i] = 1.0;
+   }
+
+   double *colUpper = (double*)calloc(numberColumns, sizeof(double));
+   for (int i = 0; i < numberColumns; i++)
+   {
+      // The first TABLE_ROWS variables do not have an upper bound.
+      // The following TABLE_COLS variables do have an upper bound,
+      // but this is enforced by the first constraint in rowLower and rowUpper.
+      colUpper[i] = COIN_DBL_MAX;
+   }
+
+
+   free(colUpper);
+   free(colLower);
+   free(rowUpper);
+   free(rowLower);
+   free(objective);
    free(elements);
    free(rows);
    free(length);
