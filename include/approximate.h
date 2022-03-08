@@ -1,4 +1,5 @@
 #include <cassert>
+#include <numeric>
 #include <coin/ClpSimplex.hpp>
 #include <coin/CoinHelperFunctions.hpp>
 
@@ -31,7 +32,7 @@ std::vector<int> approximate(const T& table, int width)
 
    // Construct the problem matrix in column-major order
 
-   // Start holds the starting index of each column
+   // start holds the starting index of each column
    // (Notice that start has numberColumns+1 items, the last index is invalid)
    CoinBigIndex *start = (CoinBigIndex*)calloc(numberColumns+1, sizeof(CoinBigIndex));
    start[0] = 0;
@@ -51,6 +52,17 @@ std::vector<int> approximate(const T& table, int width)
    // Sanity check that start was initialized correctly
    assert(start[numberColumns] == numberElements);
 
+   // length holds the number of elements in each column
+   int *length = (int*)calloc(numberColumns, sizeof(int));
+   // Construct length with values from start
+   for (int i = 0; i < numberColumns; i++)
+   {
+      length[i] = start[i+1] - start[i];
+   }
+   // Sanity check that total length is the sum
+   assert(std::reduce(length, length+numberColumns) == numberElements);
 
+   free(start);
+   free(length);
    return std::vector<int> {};
 }
