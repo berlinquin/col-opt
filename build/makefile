@@ -14,7 +14,7 @@ VPATH = ../src:../include
 # $@ is the name of the target (colopt in this case)
 # $^ is the list of all prerequisites
 colopt: main.o parser.o combination.o
-	g++ $(CPP_FLAGS) -o $@ $^ -lCoinUtils && cp colopt ../
+	g++ $(CPP_FLAGS) -o $@ $^ -lClp -lCoinUtils && cp colopt ../
 
 # $< is the first prerequisite (main.cpp in this case)
 main.o: main.cpp parser.h table.h colopt.h approximate.h combination.h

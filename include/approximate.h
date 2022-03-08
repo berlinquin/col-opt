@@ -124,8 +124,16 @@ std::vector<int> approximate(const T& table, int width)
       int tableCol = i;
       for (int i = 0; i < TABLE_ROWS; i++)
       {
+         double inverse;
          int cellLen = table[tableRow][tableCol];
-         double inverse = 1.0 / cellLen;
+         if (cellLen != 0)
+         {
+            inverse = -1.0 / cellLen;
+         }
+         else
+         {
+            inverse = 0.0;
+         }
          elements[elementIndex] = inverse;
          ++elementIndex;
          ++tableRow;
@@ -183,6 +191,57 @@ std::vector<int> approximate(const T& table, int width)
       // The following TABLE_COLS variables do have an upper bound,
       // but this is enforced by the first constraint in rowLower and rowUpper.
       colUpper[i] = COIN_DBL_MAX;
+   }
+
+
+   // print out the column lower bounds
+   printf("colLower: [");
+   for (int i = 0; i < numberColumns; i++)
+   {
+      printf("%0.2e, ", colLower[i]);
+   }
+   printf("]\n");
+   // print out the generated matrix
+   for (int i = 0; i < numberRows; i++)
+   {
+      printf("row %.3d:  [", i);
+      for (int j = 0; j < numberColumns; j++)
+      {
+         double coeff = matrix.getCoefficient(i, j);
+         printf("%0.4f, ", coeff);
+      }
+      printf("]\n");
+   }
+   printf("colUpper: [");
+   for (int i = 0; i < numberColumns; i++)
+   {
+      printf("%0.2e, ", colUpper[i]);
+   }
+   printf("]\n");
+
+
+   // Load problem into a Simplex model
+   ClpSimplex model;
+   model.loadProblem(matrix, colLower, colUpper, objective,
+         rowLower, rowUpper);
+
+   // Solve
+   //model.setObjectiveScale(-1.0);
+   model.initialSolve();
+   model.dual();
+
+   // Check the solution returned by the model
+   const double *solution = model.primalColumnSolution();
+   for (int i = 0; i < numberColumns; i++)
+   {
+      if (solution[i])
+      {
+         printf("Column %d has value %g\n", i, solution[i]);
+      }
+      else
+      {
+         printf("Column %d has NO solution: %g\n", i, solution[i]);
+      }
    }
 
 
