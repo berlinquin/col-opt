@@ -134,6 +134,9 @@ std::vector<int> approximate(const T& table, int width)
    // Sanity check
    assert(elementIndex == numberElements);
 
+   // Create a packed (sparse) matrix from the given arrays
+   CoinPackedMatrix matrix(true, numberRows, numberColumns, numberElements,
+         elements, rows, start, length);
 
    free(elements);
    free(rows);
