@@ -201,6 +201,7 @@ std::vector<int> approximate(const T& table, int width)
 
 
    // print out the column lower bounds
+   /*
    printf("colLower: [");
    for (int i = 0; i < numberColumns; i++)
    {
@@ -224,6 +225,7 @@ std::vector<int> approximate(const T& table, int width)
       printf("%0.2e, ", colUpper[i]);
    }
    printf("]\n");
+   */
 
 
    // Load problem into a Simplex model
@@ -240,7 +242,7 @@ std::vector<int> approximate(const T& table, int width)
    model.initialSolve();
    // Check the solution returned by the model
    const double *solution = model.primalColumnSolution();
-   for (int i = 0; i < numberColumns; i++)
+   for (int i = TABLE_ROWS; i < numberColumns; i++)
    {
       if (solution[i])
       {
@@ -252,6 +254,7 @@ std::vector<int> approximate(const T& table, int width)
       }
    }
 
+   /*
    printf("model.primal(1)\n");
    model.primal(1);
    // Check the solution returned by the model
@@ -283,6 +286,7 @@ std::vector<int> approximate(const T& table, int width)
          printf("Column %d has NO solution: %g\n", i, solution[i]);
       }
    }
+   */
 
 
    free(colUpper);

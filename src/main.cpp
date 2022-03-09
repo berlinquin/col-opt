@@ -81,12 +81,13 @@ int main(int argc, char *argv[])
    // - print out the optimal column widths
 
    // Do a naive optimization of the table
-   optimize<>(*cell_lengths, width);
+   //optimize<>(*cell_lengths, width);
 
    // Approximate the best widths with linear programming
    approximate<>(*cell_lengths, width);
 
    // Print the table of string lengths
+   /*
    for (table_index i = 0; i < ROWS; i++)
    {
       for (table_index j = 0; j < COLS; j++)
@@ -95,6 +96,7 @@ int main(int argc, char *argv[])
       }
       printf("\n");
    }
+   */
 
    // Cleanup
    delete cell_lengths;
