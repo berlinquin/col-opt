@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cmath>
 #include <numeric>
 #include <coin/ClpSimplex.hpp>
 #include <coin/CoinHelperFunctions.hpp>
@@ -7,7 +8,8 @@
 template<typename T>
 std::vector<int> approximate(const T& table, int width);
 
-
+// Round the given list so that all of its elements sum up to the given sum
+std::vector<int> round_list(const std::vector<double>& list, int sum);
 
 template<typename T>
 std::vector<int> approximate(const T& table, int width)
@@ -288,6 +290,12 @@ std::vector<int> approximate(const T& table, int width)
    }
    */
 
+   // Initialize pointers to the beginning of the width variables
+   // and one past the end of the array
+   const double *widths_begin = solution + TABLE_ROWS;
+   const double *widths_end = solution + numberColumns;
+   std::vector<double> optimal_widths { widths_begin, widths_end };
+   assert(optimal_widths.size() == TABLE_COLS);
 
    free(colUpper);
    free(colLower);
@@ -298,5 +306,71 @@ std::vector<int> approximate(const T& table, int width)
    free(rows);
    free(length);
    free(start);
-   return std::vector<int> {};
+   return round_list(optimal_widths, width);
+}
+
+std::vector<int> round_list(const std::vector<double>& list, int sum)
+{
+   // Create a second list the same size as list
+   std::vector<double> fractional(list.size());
+
+   // Create a list to track indices in the original list
+   std::vector<int> index(list.size());
+   std::iota(index.begin(), index.end(), 0);
+
+   // Fill fractional with the fractional components of each item in list
+   auto get_fractional = [](double d) -> double
+   {
+      double i;
+      double f = std::modf(d, &i);
+      if (f > 0.5)
+      {
+         f = 1.0 - f;
+      }
+      return f;
+   };
+   std::transform(list.begin(), list.end(), fractional.begin(), get_fractional);
+
+   // Sort list by fractional component.
+   // Elements closest to 0 or 1 should come first,
+   // followed by elements closer to .5
+   auto index_compare = [&fractional](int a, int b)
+   {
+      return fractional[a] < fractional[b];
+   };
+   std::sort(index.begin(), index.end(), index_compare);
+
+   // Begin rounding, starting with the values closest to their respective boundaries
+   std::vector<int> to_return(list.size());
+   int used_width = 0;
+   for (int i = 0; i < to_return.size(); ++i)
+   {
+      int rounded = std::round(fractional[i]);
+      to_return[i] = rounded;
+      used_width += rounded;
+   }
+
+   // If not enough width was used,
+   // round up the values closest to the edge
+   int i = 0;
+   while (used_width < sum)
+   {
+      // (Only want to do this for values that were rounded *down* initially)
+      int fractional_index = index[i];
+      ++to_return[fractional_index];
+      ++used_width;
+      ++i;
+   }
+   // If too much width was used,
+   // round down the values closest to the edge
+   while (used_width > sum)
+   {
+      // (Only want to do this for values that were rounded *up* initially)
+      int fractional_index = index[i];
+      --to_return[fractional_index];
+      --used_width;
+      ++i;
+   }
+
+   return to_return;
 }
