@@ -204,13 +204,13 @@ std::vector<int> approximate(const T& table, int width)
    // print out the generated matrix
    for (int i = 0; i < numberRows; i++)
    {
-      printf("row %.3d:  [", i);
+      printf("row %.3d: %0.2e <= [", i, rowLower[i]);
       for (int j = 0; j < numberColumns; j++)
       {
          double coeff = matrix.getCoefficient(i, j);
          printf("%0.4f, ", coeff);
       }
-      printf("]\n");
+      printf("] <= %0.4f\n", rowUpper[i]);
    }
    printf("colUpper: [");
    for (int i = 0; i < numberColumns; i++)
@@ -230,11 +230,42 @@ std::vector<int> approximate(const T& table, int width)
    model.setObjectiveScale(-1.0);
 
    // Solve
+   printf("model.initialSolve()\n");
    model.initialSolve();
-   model.dual();
-
    // Check the solution returned by the model
    const double *solution = model.primalColumnSolution();
+   for (int i = 0; i < numberColumns; i++)
+   {
+      if (solution[i])
+      {
+         printf("Column %d has value %g\n", i, solution[i]);
+      }
+      else
+      {
+         printf("Column %d has NO solution: %g\n", i, solution[i]);
+      }
+   }
+
+   printf("model.primal(1)\n");
+   model.primal(1);
+   // Check the solution returned by the model
+   solution = model.primalColumnSolution();
+   for (int i = 0; i < numberColumns; i++)
+   {
+      if (solution[i])
+      {
+         printf("Column %d has value %g\n", i, solution[i]);
+      }
+      else
+      {
+         printf("Column %d has NO solution: %g\n", i, solution[i]);
+      }
+   }
+
+   printf("model.dual()\n");
+   model.dual();
+   // Check the solution returned by the model
+   solution = model.primalColumnSolution();
    for (int i = 0; i < numberColumns; i++)
    {
       if (solution[i])
