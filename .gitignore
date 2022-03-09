@@ -1,6 +1,8 @@
 # binary files produced by make
 colopt
 gentest
+clpdriver
+clpmod
 *.o
 
 # files produced by wasm toolchain
