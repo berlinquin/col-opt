@@ -334,9 +334,9 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
    std::sort(index.begin(), index.end(), index_compare);
 
    // Find the index of the first element >= 0.5
-   auto will_round_up = [&fractional](double d) -> bool
+   auto will_round_up = [&fractional](int i) -> bool
    {
-      return d >= 0.5;
+      return fractional[i] >= 0.5;
    };
    std::vector<int>::iterator round_up_index = std::find_if(index.begin(), index.end(), will_round_up);
 
@@ -345,10 +345,12 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
    int used_width = 0;
    for (int i = 0; i < to_return.size(); ++i)
    {
-      int rounded = std::round(fractional[i]);
+      int rounded = std::round(list[i]);
       to_return[i] = rounded;
       used_width += rounded;
    }
+   printf("In list with %d elements, used %d width after rounding, "
+         "where %d is needed\n", list.size(), used_width, sum);
 
    // Maybe check that (width-used_width) <= list.size()?
    // if not, got a weird value for sum
@@ -366,6 +368,7 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
       }
       --round_up_index;
       int fractional_index = *round_up_index;
+      printf("adjusting index %d up\n", fractional_index);
       ++to_return[fractional_index];
       ++used_width;
    }
@@ -379,6 +382,7 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
       }
       // (Only want to do this for values that were rounded *up* initially)
       int fractional_index = *round_up_index;
+      printf("adjusting index %d down\n", fractional_index);
       --to_return[fractional_index];
       --used_width;
       ++round_up_index;
