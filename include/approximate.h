@@ -164,7 +164,7 @@ std::vector<int> approximate(const T& table, int width)
    rowLower[0] = width;
    for (int i = 1; i < numberRows; i++)
    {
-      rowLower[0] = -COIN_DBL_MAX;
+      rowLower[i] = -COIN_DBL_MAX;
    }
 
    double *rowUpper = (double*)calloc(numberRows, sizeof(double));
