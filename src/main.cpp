@@ -84,7 +84,13 @@ int main(int argc, char *argv[])
    //optimize<>(*cell_lengths, width);
 
    // Approximate the best widths with linear programming
-   approximate<>(*cell_lengths, width);
+   std::vector<int> widths = approximate<>(*cell_lengths, width);
+   printf("approximate best widths: [");
+   for (int i = 0; i < widths.size(); ++i)
+   {
+      printf("%d, ", widths[i]);
+   }
+   printf("]\n");
 
    // Print the table of string lengths
    /*

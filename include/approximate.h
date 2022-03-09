@@ -322,25 +322,25 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
    auto get_fractional = [](double d) -> double
    {
       double i;
-      double f = std::modf(d, &i);
-      if (f > 0.5)
-      {
-         f = 1.0 - f;
-      }
-      return f;
+      return std::modf(d, &i);
    };
    std::transform(list.begin(), list.end(), fractional.begin(), get_fractional);
 
-   // Sort list by fractional component.
-   // Elements closest to 0 or 1 should come first,
-   // followed by elements closer to .5
+   // Sort list by fractional component
    auto index_compare = [&fractional](int a, int b)
    {
       return fractional[a] < fractional[b];
    };
    std::sort(index.begin(), index.end(), index_compare);
 
-   // Begin rounding, starting with the values closest to their respective boundaries
+   // Find the index of the first element >= 0.5
+   auto will_round_up = [&fractional](double d) -> bool
+   {
+      return d >= 0.5;
+   };
+   std::vector<int>::iterator round_up_index = std::find_if(index.begin(), index.end(), will_round_up);
+
+   // Begin rounding, and track how much width is used
    std::vector<int> to_return(list.size());
    int used_width = 0;
    for (int i = 0; i < to_return.size(); ++i)
@@ -350,26 +350,38 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
       used_width += rounded;
    }
 
+   // Maybe check that (width-used_width) <= list.size()?
+   // if not, got a weird value for sum
+
    // If not enough width was used,
    // round up the values closest to the edge
-   int i = 0;
    while (used_width < sum)
    {
       // (Only want to do this for values that were rounded *down* initially)
-      int fractional_index = index[i];
+      // round_up_index now points to the value
+      // with the largest fractional component that was rounded down
+      if (round_up_index == index.begin())
+      {
+         round_up_index = index.end();
+      }
+      --round_up_index;
+      int fractional_index = *round_up_index;
       ++to_return[fractional_index];
       ++used_width;
-      ++i;
    }
    // If too much width was used,
    // round down the values closest to the edge
    while (used_width > sum)
    {
+      if (round_up_index == index.end())
+      {
+         round_up_index = index.begin();
+      }
       // (Only want to do this for values that were rounded *up* initially)
-      int fractional_index = index[i];
+      int fractional_index = *round_up_index;
       --to_return[fractional_index];
       --used_width;
-      ++i;
+      ++round_up_index;
    }
 
    return to_return;
