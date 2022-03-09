@@ -225,8 +225,11 @@ std::vector<int> approximate(const T& table, int width)
    model.loadProblem(matrix, colLower, colUpper, objective,
          rowLower, rowUpper);
 
+   // Looks like Clp tries to minimize by default,
+   // adjusting the objective scale causes it to maximize instead
+   model.setObjectiveScale(-1.0);
+
    // Solve
-   //model.setObjectiveScale(-1.0);
    model.initialSolve();
    model.dual();
 
