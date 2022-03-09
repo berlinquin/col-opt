@@ -19,6 +19,7 @@ int main(int argc, const char *argv[])
           exit(1);
 #endif
      } else
+          // status = model.readGMPL(argv[1], nullptr, true);
           status = model.readMps(argv[1], true);
 
      if (status) {
