@@ -1,0 +1,17 @@
+var r1;
+var r2;
+var x1 >= 1;
+var x2 >= 1;
+var x3 >= 1;
+
+maximize z:     r1 + r2;
+
+subject to cw: x1 + x2 + x3 = 20;
+subject to c11: r1 - .5 *x1 <= 0;
+subject to c12: r1 - .25*x2 <= 0;
+subject to c13: r1 -     x3 <= 0;
+subject to c21: r2 - .33*x1 <= 0;
+subject to c22: r2 - .50*x2 <= 0;
+subject to c23: r2 - .25*x3 <= 0;
+
+end;
