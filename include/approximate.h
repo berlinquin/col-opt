@@ -198,8 +198,8 @@ std::vector<int> approximate(const T& table, int width)
    }
 
 
-   // print out the column lower bounds
    /*
+   // print out the column lower bounds
    printf("colLower: [");
    for (int i = 0; i < numberColumns; i++)
    {
@@ -239,51 +239,19 @@ std::vector<int> approximate(const T& table, int width)
    model.initialSolve();
    // Check the solution returned by the model
    const double *solution = model.primalColumnSolution();
+   int c = 1;
    for (int i = TABLE_ROWS; i < numberColumns; i++)
    {
       if (solution[i])
       {
-         printf("Column %d has value %g\n", i, solution[i]);
+         printf("Column %d has width %g\n", c, solution[i]);
       }
       else
       {
-         printf("Column %d has NO solution: %g\n", i, solution[i]);
+         printf("ERROR: column %d has an invalid width\n", c, solution[i]);
       }
+      ++c;
    }
-
-   /*
-   printf("model.primal(1)\n");
-   model.primal(1);
-   // Check the solution returned by the model
-   solution = model.primalColumnSolution();
-   for (int i = 0; i < numberColumns; i++)
-   {
-      if (solution[i])
-      {
-         printf("Column %d has value %g\n", i, solution[i]);
-      }
-      else
-      {
-         printf("Column %d has NO solution: %g\n", i, solution[i]);
-      }
-   }
-
-   printf("model.dual()\n");
-   model.dual();
-   // Check the solution returned by the model
-   solution = model.primalColumnSolution();
-   for (int i = 0; i < numberColumns; i++)
-   {
-      if (solution[i])
-      {
-         printf("Column %d has value %g\n", i, solution[i]);
-      }
-      else
-      {
-         printf("Column %d has NO solution: %g\n", i, solution[i]);
-      }
-   }
-   */
 
    // Initialize pointers to the beginning of the width variables
    // and one past the end of the array
