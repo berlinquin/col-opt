@@ -128,19 +128,15 @@ std::vector<int> approximate(const T& table, int width)
       {
          double inverse;
          int cellLen = table[tableRow][tableCol];
-         // Incrementing cellLen moves the range of possible values
-         // from [0, MAX] to [1, MAX],
-         // preventing a division by zero
-         ++cellLen;
          if (cellLen != 0)
          {
             inverse = -1.0 / cellLen;
          }
          else
          {
-            assert(false);
-            // If cellLen is zero, say cellLen is 1
-            //inverse = -1.0;
+            // Since column widths are >= 1, a cell with length zero
+            // has the same cost as a cell with length 1
+            inverse = -1.0;
          }
          elements[elementIndex] = inverse;
          ++elementIndex;
