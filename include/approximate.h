@@ -101,7 +101,7 @@ std::vector<int> approximate(const T& table, int width)
       }
    }
    // Sanity check
-   printf("elementIndex: %d, numberElements: %d\n", elementIndex, numberElements);
+   //printf("elementIndex: %d, numberElements: %d\n", elementIndex, numberElements);
    assert(elementIndex == numberElements);
 
    // Elements holds the coefficient on each variable
@@ -235,7 +235,6 @@ std::vector<int> approximate(const T& table, int width)
    model.setOptimizationDirection(-1.0);
 
    // Solve
-   printf("model.initialSolve()\n");
    model.initialSolve();
    // Check the solution returned by the model
    const double *solution = model.primalColumnSolution();
@@ -312,8 +311,8 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
       to_return[i] = rounded;
       used_width += rounded;
    }
-   printf("approximate(): In list with %d elements, used %d width after rounding, "
-         "where %d is needed\n", list.size(), used_width, sum);
+   //printf("approximate(): In list with %d elements, used %d width after rounding, "
+   //      "where %d is needed\n", list.size(), used_width, sum);
 
    // Check if there are enough values to adjust to meet the required sum.
    // If not, print an error and return an empty array.
@@ -346,7 +345,7 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
       // with the largest fractional component that was rounded down
       --round_up_index;
       int fractional_index = *round_up_index;
-      printf("approximate(): adjusting index %d up\n", fractional_index);
+      //printf("approximate(): adjusting index %d up\n", fractional_index);
       ++to_return[fractional_index];
       ++used_width;
    }
@@ -355,7 +354,7 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
    while (used_width > sum)
    {
       int fractional_index = *round_up_index;
-      printf("approximate(): adjusting index %d down\n", fractional_index);
+      //printf("approximate(): adjusting index %d down\n", fractional_index);
       --to_return[fractional_index];
       --used_width;
       ++round_up_index;

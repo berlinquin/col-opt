@@ -72,15 +72,10 @@ int main(int argc, char *argv[])
    // table_type has two dimensions by definition
    const int ROWS = cell_lengths->shape()[0];
    const int COLS = cell_lengths->shape()[1];
-   printf("cell_lengths has shape %dx%d\n", ROWS, COLS);
+   printf("Table has shape %dx%d\n", ROWS, COLS);
 
-   // TODO implement the naive approach
-   // - write a cost function
-   // - take an integer (total width) as input from the user
-   // - iterate over all possible column splits, run the cost function
-   // - print out the optimal column widths
-
-   // Do a naive optimization of the table
+   // Do a naive optimization of the table.
+   // This takes a long time to run!
    //optimize<>(*cell_lengths, width);
 
    // Approximate the best widths with linear programming
