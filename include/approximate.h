@@ -310,10 +310,6 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
    // Create a second list the same size as list
    std::vector<double> fractional(list.size());
 
-   // Create a list to track indices in the original list
-   std::vector<int> index(list.size());
-   std::iota(index.begin(), index.end(), 0);
-
    // Fill fractional with the fractional components of each item in list
    auto get_fractional = [](double d) -> double
    {
@@ -321,6 +317,10 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
       return std::modf(d, &i);
    };
    std::transform(list.begin(), list.end(), fractional.begin(), get_fractional);
+
+   // Create a list to track indices in the original list
+   std::vector<int> index(list.size());
+   std::iota(index.begin(), index.end(), 0);
 
    // Sort list by fractional component
    auto index_compare = [&fractional](int a, int b)
@@ -345,40 +345,50 @@ std::vector<int> round_list(const std::vector<double>& list, int sum)
       to_return[i] = rounded;
       used_width += rounded;
    }
-   printf("In list with %d elements, used %d width after rounding, "
+   printf("approximate(): In list with %d elements, used %d width after rounding, "
          "where %d is needed\n", list.size(), used_width, sum);
 
-   // Maybe check that (width-used_width) <= list.size()?
-   // if not, got a weird value for sum
+   // Check if there are enough values to adjust to meet the required sum.
+   // If not, print an error and return an empty array.
+   if (used_width < sum)
+   {
+      int difference = sum - used_width;
+      int num_rounded_down = round_up_index - index.begin();
+      if (difference > num_rounded_down)
+      {
+         printf("approximate(): ERROR: sum %d is too large\n", sum);
+         return std::vector<int> {};
+      }
+   }
+   else if (used_width > sum)
+   {
+      int difference = used_width - sum;
+      int num_rounded_up = index.end() - round_up_index;
+      if (difference > num_rounded_up)
+      {
+         printf("approximate(): ERROR: sum %d is too small\n", sum);
+         return std::vector<int> {};
+      }
+   }
 
-   // If not enough width was used,
-   // round up the values closest to the edge
+   // If not enough width was used, begin rounding values up,
+   // starting with the fractional values just less than 0.5
    while (used_width < sum)
    {
-      // (Only want to do this for values that were rounded *down* initially)
       // round_up_index now points to the value
       // with the largest fractional component that was rounded down
-      if (round_up_index == index.begin())
-      {
-         round_up_index = index.end();
-      }
       --round_up_index;
       int fractional_index = *round_up_index;
-      printf("adjusting index %d up\n", fractional_index);
+      printf("approximate(): adjusting index %d up\n", fractional_index);
       ++to_return[fractional_index];
       ++used_width;
    }
-   // If too much width was used,
-   // round down the values closest to the edge
+   // If too much width was used, begin rounding values down,
+   // starting with the fractional values just >= 0.5
    while (used_width > sum)
    {
-      if (round_up_index == index.end())
-      {
-         round_up_index = index.begin();
-      }
-      // (Only want to do this for values that were rounded *up* initially)
       int fractional_index = *round_up_index;
-      printf("adjusting index %d down\n", fractional_index);
+      printf("approximate(): adjusting index %d down\n", fractional_index);
       --to_return[fractional_index];
       --used_width;
       ++round_up_index;
