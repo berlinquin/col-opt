@@ -17,7 +17,7 @@ providing:
 
 - build/
 
-  Run 'make' from this directory to build the main project.
+  Run `make` from this directory to build the main project.
 This produces the 'colopt' binary.
 (Note that you will need the Clp and CoinUtils dependencies installed,
 see Dependencies section).
@@ -35,7 +35,7 @@ example COIN-OR Clp programs.
 
   This sub-project includes a makefile to build this project for the browser
 with WebAssembly (Wasm).
-See the separate README for more details.
+See the separate [README](./public_html) for more details.
 
 - src/
 
@@ -45,7 +45,7 @@ See the separate README for more details.
 
   This directory contains sample csv files that can be
 passed to the colopt program as input.
-See the separate README in test for more details.
+See the separate [README](./test) in test for more details.
 
 
 ## Dependencies
@@ -53,6 +53,6 @@ See the separate README in test for more details.
 Building the main program requires you to have the Clp system headers
 and shared libraries available on your machine.
 
-On debian, these can be installed with 
+On debian, these can be installed with
 `apt install coinor-libclp-dev coinor-libcoinutils-dev`.
 
