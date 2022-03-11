@@ -1,4 +1,6 @@
-# ColOpt
+# col-opt
+
+**Column-Width Optimization**
 
 Finding the optimal column widths to format a spreadsheet or table
 within a given width is an [NP-hard problem](https://quintenkent.com/content/column-problem.html).
@@ -6,11 +8,11 @@ within a given width is an [NP-hard problem](https://quintenkent.com/content/col
 This project tackles the column problem from a couple different angles,
 providing:
 
-- A direct iterator-based approach that examines the entire
-  problem space for an optimal solution (slow)
+- A **generator-based** approach that examines the entire
+  problem space for an **optimal** solution *(slow)*
 
-- A linear programming approach that reduces the problem space
-  to a linear model that can approximate the optimal solution (fast)
+- A **linear programming** approach that reduces the problem space
+  to a linear model that can **approximate** the optimal solution *(fast)*
 
 
 ## Project structure
