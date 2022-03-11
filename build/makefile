@@ -42,5 +42,5 @@ clpmod: clp/modify.cpp
 
 # PHONY targets
 clean:
-	rm colopt gentest *.o
+	rm colopt gentest clpdriver clpmod *.o
 
