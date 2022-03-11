@@ -4,7 +4,7 @@
 # -I   add to the search path for #includes
 CPP_FLAGS = -g -std=c++17 -I ../include/
 
-.PHONY: clean time
+.PHONY: clean
 
 # Look for dependencies in src/ and include/ directories
 VPATH = ../src:../include
@@ -33,7 +33,7 @@ gentest: generator_test.o combination.o
 generator_test.o: generator_test.cpp combination.h
 	g++ $(CPP_FLAGS) -c $<
 
-# Separate program to test linear programming library
+# Separate programs to test linear programming library
 clpdriver: clp/driver.cpp
 	g++ $(CPP_FLAGS) -o $@ $^ -lClp
 
@@ -43,7 +43,4 @@ clpmod: clp/modify.cpp
 # PHONY targets
 clean:
 	rm colopt gentest *.o
-
-time: colopt
-	/usr/bin/bash -c 'time ./colopt -w 20 ramen-ratings.csv > /dev/null'
 
