@@ -3,7 +3,7 @@
 #include "rapidcsv/rapidcsv.h"
 #include "parser.h"
 
-bool parse_csv(const std::string& filename, table_type **out)
+bool parse_csv(const std::string& filename, string_table_type **text, table_type **lengths)
 {
    // Treat all columns and rows as data (i.e. no header row)
    rapidcsv::LabelParams lp {-1, -1};
@@ -12,7 +12,7 @@ bool parse_csv(const std::string& filename, table_type **out)
    const int ROWS = csv_file.GetRowCount();
    const int COLS = csv_file.GetColumnCount();
    // Create a 2D array with the same dimensions as the csv file
-   *out = new table_type(boost::extents[ROWS][COLS]);
+   *lengths = new table_type(boost::extents[ROWS][COLS]);
    // Iterate over the csv, for each cell
    for (int i = 0; i < ROWS; i++)
    {
@@ -30,7 +30,7 @@ bool parse_csv(const std::string& filename, table_type **out)
          // Print the column number and cell contents
          //printf("%d %s\n", j, row[j].c_str());
          // Write the string's length to output matrix
-         (**out)[i][j] = row[j].size();
+         (**lengths)[i][j] = row[j].size();
       }
    }
    return true;
