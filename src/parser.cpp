@@ -12,6 +12,7 @@ bool parse_csv(const std::string& filename, string_table_type **text, table_type
    const int ROWS = csv_file.GetRowCount();
    const int COLS = csv_file.GetColumnCount();
    // Create a 2D array with the same dimensions as the csv file
+   *text = new string_table_type(boost::extents[ROWS][COLS]);
    *lengths = new table_type(boost::extents[ROWS][COLS]);
    // Iterate over the csv, for each cell
    for (int i = 0; i < ROWS; i++)
@@ -29,6 +30,8 @@ bool parse_csv(const std::string& filename, string_table_type **text, table_type
       {
          // Print the column number and cell contents
          //printf("%d %s\n", j, row[j].c_str());
+         // Write the string to output matrix
+         (**text)[i][j] = row[j];
          // Write the string's length to output matrix
          (**lengths)[i][j] = row[j].size();
       }

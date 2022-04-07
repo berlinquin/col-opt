@@ -62,8 +62,8 @@ int main(int argc, char *argv[])
    }
 
    // Parse the input file into a table of cell lengths
-   table_type *cell_lengths;
    string_table_type *cell_text;
+   table_type *cell_lengths;
    // TODO parse file into 2D array of strings
    bool success = parse_csv(filename, &cell_text, &cell_lengths);
    if (!success)
@@ -101,8 +101,24 @@ int main(int argc, char *argv[])
    }
    */
 
+   // Print out the optimized table to stdout
+   // FOR each row in the table
+   printf("CSV contents:\n");
+   for (int i = 0; i < ROWS; i++)
+   {
+      // Create a 2D vector to hold the lines for each cell
+      std::vector<std::string> cells;
+      // FOR each cell in the row
+      for (int j = 0; j < COLS; j++)
+      {
+         printf("%s,", (*cell_text)[i][j].c_str());
+      }
+      printf("\n");
+   }
+
    // Cleanup
    delete cell_lengths;
+   delete cell_text;
 
    return 0;
 }
