@@ -102,18 +102,52 @@ int main(int argc, char *argv[])
    */
 
    // Print out the optimized table to stdout
-   // FOR each row in the table
-   printf("CSV contents:\n");
+   std::cout << "CSV contents:" << std::endl;
    for (int i = 0; i < ROWS; i++)
    {
-      // Create a 2D vector to hold the lines for each cell
-      std::vector<std::string> cells;
-      // FOR each cell in the row
+      // Calculate the number of lines this row will take
+      int row_len = 0;
       for (int j = 0; j < COLS; j++)
       {
-         printf("%s,", (*cell_text)[i][j].c_str());
+         int cell_rows = ceil(1.0 * (*cell_lengths)[i][j] / widths[j]);
+         row_len = std::max(row_len, cell_rows);
       }
-      printf("\n");
+      // Track if every cell has been fully printed
+      bool text_remaining = true;
+
+      for (int k = 0; k < row_len; k++)
+      {
+            if (k == 0 && i == 25)
+            {
+               std::string s = (*cell_text)[i][2];
+               ptrdiff_t num_bytes = s.end() - s.begin();
+               std::cout << (*cell_text)[i][2] << " calculated size: " << (*cell_text)[i][2].size() << " expected size: " << (*cell_lengths)[i][2] << " num bytes: " << num_bytes << std::endl;
+            }
+         // For each cell in the row,
+         // print characters in range [k, k+widths[j])
+         for (int j = 0; j < COLS; j++)
+         {
+            int start = k*widths[j];
+            int next_window_start = (k+1)*widths[j];
+            int string_len = (*cell_lengths)[i][j];
+            int upper_bound = std::min(next_window_start, string_len);
+            if (start < upper_bound)
+            {
+               // print to std out, padded to width characters
+               const char *c = (*cell_text)[i][j].c_str();
+               int size = upper_bound - start;
+               std::string_view sv(c + start, size);
+               std::cout << std::left << std::setw(widths[j]) << sv << "|";
+               //std::cout << start << "," << size;
+            }
+            else
+            {
+               // print spaces only (an empty column)
+               std::cout << std::setw(widths[j]) << "" << "|";
+            }
+         }
+         std::cout << std::endl;
+      }
    }
 
    // Cleanup
