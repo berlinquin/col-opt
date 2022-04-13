@@ -3,6 +3,7 @@
 #include <numeric>
 #include <coin/ClpSimplex.hpp>
 #include <coin/CoinHelperFunctions.hpp>
+#include "global.h"
 
 // Approximate the optimal solution with linear programming
 template<typename T>
@@ -14,7 +15,10 @@ std::vector<int> round_list(const std::vector<double>& list, int sum);
 template<typename T>
 std::vector<int> approximate(const T& table, int width)
 {
-   printf("approximate()\n");
+   if (colopt::verbose)
+   {
+      printf("approximate()\n");
+   }
 
    const int TABLE_ROWS = table.shape()[0];
    const int TABLE_COLS = table.shape()[1];
@@ -228,6 +232,9 @@ std::vector<int> approximate(const T& table, int width)
 
    // Load problem into a Simplex model
    ClpSimplex model;
+   int log_level = colopt::verbose ? 1 : 0;
+   model.setLogLevel(log_level);
+
    model.loadProblem(matrix, colLower, colUpper, objective,
          rowLower, rowUpper);
 
@@ -243,7 +250,10 @@ std::vector<int> approximate(const T& table, int width)
    {
       if (solution[i])
       {
-         printf("Column %d has width %g\n", c, solution[i]);
+         if (colopt::verbose)
+         {
+            printf("Column %d has width %g\n", c, solution[i]);
+         }
       }
       else
       {

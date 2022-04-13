@@ -5,12 +5,13 @@
 #include "table.h"
 #include "colopt.h"
 #include "approximate.h"
+#include "global.h"
 
 
 
 void printUsage()
 {
-   printf("Usage: colopt -w <width> <filename>\n"
+   printf("Usage: colopt [-v] -w <width> <filename>\n"
           "  e.g. colopt -w 80 data.csv\n");
 }
 
@@ -21,26 +22,44 @@ int main(int argc, char *argv[])
 
    // Make sure that three args were passed,
    // and that the first arg is the -w flag
-   if (argc != 4)
+   if (argc < 4)
    {
       printf("Error: %d arguments passed, 3 expected\n", (argc-1));
       printUsage();
       return 1;
    }
-   else if (argv[1] != std::string("-w"))
+
+   // print extra content to stdout
+   colopt::verbose = false;
+   // index to the width string in argv
+   int width_i = 0;
+
+   // Parse CLI args
+   for (int i = 1; i < argc; i++)
    {
-      printf("Error: flag '%s' not recognized\n", argv[1]);
+      if (argv[i] == std::string("-v"))
+      {
+         colopt::verbose = true;
+      }
+      else if (argv[i] == std::string("-w"))
+      {
+         width_i = i+1;
+      }
+   }
+   if (width_i == 0 || width_i >= argc)
+   {
+      printf("Error: missing or invalid width flag");
       printUsage();
       return 1;
    }
 
    // Parse the width and filename from the given args
    int width;
-   std::string filename = argv[3];
+   std::string filename = argv[argc-1];
    try
    {
       // can throw std::invalid_argument or std::out_of_range
-      width = std::stoi(argv[2]);
+      width = std::stoi(argv[width_i]);
       // can throw implementation defined exceptions
       fs::path path { filename };
       // can throw fs::filesystem_error
@@ -74,7 +93,10 @@ int main(int argc, char *argv[])
    // table_type has two dimensions by definition
    const int ROWS = cell_lengths->shape()[0];
    const int COLS = cell_lengths->shape()[1];
-   printf("Table has shape %dx%d\n", ROWS, COLS);
+   if (colopt::verbose)
+   {
+      printf("Table has shape %dx%d\n", ROWS, COLS);
+   }
 
    // Do a naive optimization of the table.
    // This takes a long time to run!
@@ -82,12 +104,15 @@ int main(int argc, char *argv[])
 
    // Approximate the best widths with linear programming
    std::vector<int> widths = approximate<>(*cell_lengths, width);
-   printf("approximate best widths: [");
-   for (int i = 0; i < widths.size(); ++i)
+   if (colopt::verbose)
    {
-      printf("%d, ", widths[i]);
+      printf("approximate best widths: [");
+      for (int i = 0; i < widths.size(); ++i)
+      {
+         printf("%d, ", widths[i]);
+      }
+      printf("]\n");
    }
-   printf("]\n");
 
    // Print the table of string lengths
    /*
@@ -102,7 +127,6 @@ int main(int argc, char *argv[])
    */
 
    // Print out the optimized table to stdout
-   std::cout << "CSV contents:" << std::endl;
    for (int i = 0; i < ROWS; i++)
    {
       // Calculate the number of lines this row will take
@@ -128,6 +152,7 @@ int main(int argc, char *argv[])
                const char *c = (*cell_text)[i][j].c_str();
                int size = upper_bound - start;
                std::string_view sv(c + start, size);
+               // Left align the string, filled to space widths[j]
                std::cout << std::left << std::setw(widths[j]) << sv;
             }
             else
