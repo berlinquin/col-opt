@@ -80,10 +80,9 @@ int main(int argc, char *argv[])
       return 1;
    }
 
-   // Parse the input file into a table of cell lengths
    string_table_type *cell_text;
    table_type *cell_lengths;
-   // TODO parse file into 2D array of strings
+   // Parse the input file into a table of strings and string lengths
    bool success = parse_csv(filename, &cell_text, &cell_lengths);
    if (!success)
    {
