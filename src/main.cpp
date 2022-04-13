@@ -114,14 +114,6 @@ int main(int argc, char *argv[])
       }
       for (int k = 0; k < row_len; k++)
       {
-         /*
-            if (k == 0 && i == 25)
-            {
-               std::string s = (*cell_text)[i][2];
-               size_t num_chars = std::mbstowcs(nullptr, s.c_str(), s.size());
-               std::cout << (*cell_text)[i][2] << " calculated size: " << (*cell_text)[i][2].size() << " expected size: " << (*cell_lengths)[i][2] << " num chars: " << num_chars << std::endl;
-            }
-            */
          // For each cell in the row,
          // print characters in range [k, k+widths[j])
          for (int j = 0; j < COLS; j++)
